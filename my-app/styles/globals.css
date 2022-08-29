@@ -1,3 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --dark: #212121;
+  --lightPurple: #CCCCFF;
+  --spacingXS:20px;
+  --spacingS:40px;
+  --spacingM:80px;
+  --spacingL:120px;
+  --spacingXL:240px;
+}
+
 html,
 body {
   padding: 0;
@@ -20,7 +32,9 @@ a {
     color-scheme: dark;
   }
   body {
-    color: white;
-    background: black;
+    font-family: 'Rubik', sans-serif;
+    color: var(--lightPurple);
+    background: var(--dark);
+    line-height: 150%;
   }
 }
