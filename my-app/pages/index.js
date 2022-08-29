@@ -2,10 +2,12 @@ import styled from "styled-components";
 import Image from "next/image";
 import { useState } from "react";
 import axios, { AxiosResponse } from "axios";
+import { useRouter } from 'next/router';
 // import server from "../config/config"
 
 export default function Home() {
   const [name, setname] = useState("");
+  const router = useRouter();
 
   const axiosInstance = axios.create({
     baseURL: `http://localhost:3000/api`,
@@ -26,7 +28,9 @@ export default function Home() {
     });
     if (response.status === 200) {
       localStorage.setItem("token", response.data.accessToken);
+      router.push("/challenges/editor");
     }
+
   };
 
   const handleNameChange = (e) => {
