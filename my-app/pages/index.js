@@ -43,4 +43,5 @@ const Subheading = styled.div`
 margin-top: var(--spacingS);
 font-weight: 300;
 font-size: 18px;
+text-align:center;
 `;
