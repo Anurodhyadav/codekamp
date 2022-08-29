@@ -1,3 +1,9 @@
+import styled from "styled-components";
+
 export default function Home() {
-  return <div>Welcome to code kamp people</div>;
+  return <Containr>HELLO</Containr>;
 }
+
+const Containr = styled.div`
+  color: red;
+`;
