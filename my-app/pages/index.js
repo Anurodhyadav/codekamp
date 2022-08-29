@@ -15,7 +15,7 @@ export default function Home() {
     Nickname:
     <input className="inputBox" type="text" name="name" />
   </Label>
-  <input class="primary-btn marginS" type="submit" value="Find a Warrior"/>
+  <input class="primary-btn marginS" type="submit" value="Find a warrior"/>
 </Form>
 
   </Container>;
