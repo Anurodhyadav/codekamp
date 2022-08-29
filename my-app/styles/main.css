@@ -17,11 +17,16 @@
 .primary-btn{
     width: 424px;
     height: 54px;
-    background: #CCCCFF;
+    background: var(--lightPurple);
     border-radius: 5px;
     color: var(--dark);
     font-weight: 700;
     font-size: 16px;
+    cursor:pointer;
+}
+.primary-btn:hover{
+    background: var(--darkPurple);
+    color: var(--lightPurple);
 }
 .marginS{
     margin-top:20px;
