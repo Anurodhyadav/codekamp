@@ -7,9 +7,13 @@ const Editor = () => {
   const [i, setI] = useState(2);
   const [count, setCount] = useState([1, 2]);
   const [output, setOutput] = useState();
-  //   const id = [613, 629, 638, 618];
+  const id = [613, 618, 629, 638];
 
-  //   const challengeId = id[Math.floor(Math.random() * id.length)];
+  const challengeId = id[Math.floor(Math.random() * id.length)];
+
+  const challenge = Object.values(challenges).filter(
+    (item) => challengeId === item.challengeId
+  );
 
   const runCode = () => {
     fetch("https://api.programiz.pro/api/Challenge/run", {
@@ -46,12 +50,12 @@ const Editor = () => {
     <EditorContainer>
       <Header>
         <Title>Programming Challenge</Title>
-        <Question>{challenges.challenge1.question}</Question>
+        <Question>{challenge[0].question}</Question>
       </Header>
       <ProblemDescription>
         <Description>Problem Description:</Description>
         <Tasks>
-          {Object.values(challenges.challenge1.task).map((task) => {
+          {Object.values(challenge[0].task).map((task) => {
             return <li>{task}</li>;
           })}
         </Tasks>
