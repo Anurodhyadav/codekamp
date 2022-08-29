@@ -1,15 +1,22 @@
 import styled from "styled-components";
 import { useState } from "react";
+import challenges from "./challenges.json";
 
 const Editor = () => {
   const [code, setCode] = useState();
+  const [apiResponse, setpiRsponse] = useState();
+  //   const [challengesDescrition, set]
   const [output, setOutput] = useState();
+  //   const id = [613, 629, 638, 618];
+  const id = 612;
+
+  //   const randomElement = id[Math.floor(Math.random() * id.length)];
 
   const runCode = () => {
     fetch("https://api.programiz.pro/api/Challenge/run", {
       method: "POST",
       body: JSON.stringify({
-        challengeId: 613,
+        challengeId: id,
         code: code,
       }),
       headers: {
@@ -21,8 +28,8 @@ const Editor = () => {
       .then((response) => response.json())
       .then((json) => {
         const data = json.data;
+        setApiResponse(data);
         setOutput(data.actualOutput);
-        console.log(data.actualOutput);
       });
   };
 
@@ -33,13 +40,13 @@ const Editor = () => {
   return (
     <EditorContainer>
       <Input>
-        <Title>Start coding :</Title>
+        <h2>Challenge :</h2>
+        <Title>{console.log(challenges)}</Title>
         <IDE onKeyUp={(e) => handleKeyUp(e.target.value)}></IDE>
-        <Submit onClick={() => runCode(code)}>Submit</Submit>
+        <Submit onClick={() => runCode(code)}>Run</Submit>
       </Input>
-
       <Output>
-        <Title>Output :</Title>
+        <h2>Output :</h2>
         <OutputScreen>{output}</OutputScreen>
       </Output>
     </EditorContainer>
@@ -49,37 +56,43 @@ const Editor = () => {
 export default Editor;
 
 const EditorContainer = styled.div`
-  padding: 100px;
+  padding: 5% 12%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 `;
 
 const IDE = styled.textarea`
-  width: 750px;
-  height: 750px;
+  width: 550px;
+  height: 550px;
+  background: white;
+  color: black;
 `;
 
 const Input = styled.div`
   display: flex;
   flex-direction: column;
+  padding-left: 3%;
 `;
 
 const Output = styled.div`
   display: flex;
   flex-direction: column;
+  padding-left: 3%;
 `;
 
 const OutputScreen = styled.div`
-  width: 750px;
-  height: 350px;
-  border: 2px solid red;
+  width: 550px;
+  height: 250px;
+  background: white;
+  color: black;
+  border: 2px solid white;
 `;
 
-const Title = styled.h2``;
+const Title = styled.h3``;
 
 const Submit = styled.button`
-  width: 80px;
-  height: 50px;
+  width: 85px;
+  height: 30px;
   margin-top: 10px;
 `;
