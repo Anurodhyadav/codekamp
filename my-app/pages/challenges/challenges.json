@@ -1,5 +1,5 @@
 {
-    "613": {
+    "challenge1": {
         "challengeId": 613,
         "title": "Check Odd/Even",
         "question": "Write a program to check if the entered integer is odd or even.",
@@ -10,7 +10,7 @@
         }
    
     },
-    "629": {
+    "challenge2": {
         "challengeId": 613,
         "title": "Print Fibonacci Numbers Less Than n ",
         "question": "Write a program to print fibonacci numbers where last term is less than n.",
