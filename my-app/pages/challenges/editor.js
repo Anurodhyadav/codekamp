@@ -1,9 +1,36 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { io } from "socket.io-client";
+
+let socket;
 
 const Editor = () => {
   const [code, setCode] = useState();
   const [output, setOutput] = useState();
+
+  useEffect(() => {
+    socketInitializer()
+  }
+    , [])
+
+  const socketInitializer = async () => {
+    await fetch('../api/socket');
+    socket = io()
+
+    socket.on('connect', () => {
+      console.log('connected')
+    })
+
+    socket.on('update-input', msg => {
+      console.log("This is the message", msg);
+      setCode(msg);
+    })
+  }
+
+  // const onChangeHandler = (e) => {
+  //   setInput(e.target.value)
+  //   socket.emit('input-change', e.target.value)
+  // }
 
   const runCode = () => {
     fetch("https://api.programiz.pro/api/Challenge/run", {
@@ -26,15 +53,16 @@ const Editor = () => {
       });
   };
 
-  const handleKeyUp = (value) => {
-    setCode(value);
+  const handleKeyUp = (e) => {
+    setCode(e.target.value);
+    socket.emit('input-change', e.target.value)
   };
 
   return (
     <EditorContainer>
       <Input>
         <Title>Start coding :</Title>
-        <IDE onKeyUp={(e) => handleKeyUp(e.target.value)}></IDE>
+        <IDE value={code} onChange={handleKeyUp}></IDE>
         <Submit onClick={() => runCode(code)}>Submit</Submit>
       </Input>
 
