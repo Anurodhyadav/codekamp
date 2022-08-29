@@ -71,7 +71,8 @@ const Form = styled.div``;
 const Label = styled.div``;
 
 const Subheading = styled.div`
-  margin-top: var(--spacingS);
-  font-weight: 300;
-  font-size: 18px;
+margin-top: var(--spacingS);
+font-weight: 300;
+font-size: 18px;
+text-align:center;
 `;
