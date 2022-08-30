@@ -20,7 +20,10 @@ export default function Matched(props) {
   useEffect(() => {
     if (timeLeft < 1) {
       clearInterval(countDown);
-      router.push("/challenges/editor");
+      router.push({
+        pathname: "/challenges/editor",
+        query: { opponent: props.opponent },
+      });
     }
   });
 
@@ -30,7 +33,7 @@ export default function Matched(props) {
       <Battle>
         <Info>
           <Profile>CC</Profile>
-          <Name>{ localStorage.getItem('nickname')}</Name>
+          <Name>{localStorage.getItem("nickname")}</Name>
         </Info>
 
         <ImageContainer>
@@ -39,7 +42,7 @@ export default function Matched(props) {
 
         <Info>
           <Profile>SP</Profile>
-          <Name>{ props.opponent}</Name>
+          <Name>{props.opponent}</Name>
         </Info>
       </Battle>
       {startCountDown && (
