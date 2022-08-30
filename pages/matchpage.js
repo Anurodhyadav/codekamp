@@ -2,15 +2,12 @@ import { io } from "socket.io-client";
 import { useState, useEffect } from "react";
 import LookingForAMatch from "../components/lookingForAMatch";
 import Matched from "../components/matched";
-import { useRouter } from "next/router";
 
 let socket;
 
 export default function MatchPage() {
   const [matched, setMatched] = useState(false);
   const [opponent, setopponentName] = useState("");
-
-  const router = useRouter();
 
   useEffect(() => {
     socketInitializer();
