@@ -1,13 +1,19 @@
 import styled from "styled-components";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios, { AxiosResponse } from "axios";
 import { useRouter } from "next/router";
 import { server } from "../config/config";
 
+
 export default function Home() {
   const [name, setname] = useState("");
   const router = useRouter();
+
+
+  useEffect(() => {
+    localStorage.clear();
+  },[])
 
   const axiosInstance = axios.create({
     baseURL: `${server}/api`,
