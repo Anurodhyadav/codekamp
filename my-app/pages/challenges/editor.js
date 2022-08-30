@@ -1,10 +1,12 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { io } from "socket.io-client";
+import { ShiftCipher } from "shift-cipher";
 
 let socket;
 
 import challenges from "./challenges.json";
+import { useRouter } from "next/router";
 
 const Editor = () => {
   const [code, setCode] = useState();
@@ -12,12 +14,11 @@ const Editor = () => {
   const [i, setI] = useState(2);
   const [count, setCount] = useState([1, 2]);
   const [output, setOutput] = useState();
-  const id = 612;
+  const router = useRouter();
+  const { opponent } = router.query;
   const [partnerSubmitted, setpartnerSubmitted] = useState(false);
 
-  const clients = [];
-
-  //   const challengeId = id[Math.floor(Math.random() * id.length)];
+  const cipher = new ShiftCipher();
 
   useEffect(() => {
     socketInitializer();
@@ -26,7 +27,6 @@ const Editor = () => {
   const socketInitializer = async () => {
     await fetch("../api/socket");
     socket = io();
-
 
     socket.on("update-input", (msg) => {
       if (msg.user === localStorage.getItem("nickname")) {
@@ -44,11 +44,14 @@ const Editor = () => {
     });
   };
 
-  // const id = [613, 618, 629, 638];
+  const encrypt = (text) => {
+    return cipher.encode(text);
+  };
 
-  // const challengeId = id[Math.floor(Math.random() * id.length)];
+  const decrypt = (text) => {
+    return cipher.decode(text);
+  };
 
-  const challengeId = 613;
   const challenge = Object.values(challenges).filter(
     (item) => 613 === item.challengeId
   );
@@ -112,13 +115,15 @@ const Editor = () => {
         </ProblemStatement>
         <Opponent>
           {partnerSubmitted && <div>YOU LOST</div>}
-          <OpponentName>Opponent Name: Serial Parser</OpponentName>
+          <OpponentName>Opponent Name: {opponent}</OpponentName>
           <OpponentInfo>
             <Submission>Last Submission: No Submission</Submission>
             <CasePassed>Case CasePassed: 0/4</CasePassed>
           </OpponentInfo>
 
-          <OppoInputScreen value={partnerCode}></OppoInputScreen>
+          <OppoInputScreen
+            value={partnerCode?.length && encrypt(partnerCode)}
+          ></OppoInputScreen>
         </Opponent>
       </OpponentEditor>
 
@@ -168,7 +173,6 @@ const EditorContainer = styled.div`
   background-color: var(--dark);
   color: #ffffff;
   @media screen and (min-width: 1441px) {
-    // padding: 3% 15%;
   }
 `;
 
@@ -222,6 +226,7 @@ const OppoInputScreen = styled.textarea`
   font-size: 14px;
   margin-top: var(--spacingXS);
   border-left: 2px solid (--dark);
+  filter: blur(2px);
   resize: none; /*remove the resize handle on the bottom right*/
 `;
 
