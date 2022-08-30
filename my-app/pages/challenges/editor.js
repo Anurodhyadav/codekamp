@@ -1,8 +1,10 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { io } from "socket.io-client";
-import challenges from "./challenges.json";
+import { ShiftCipher } from "shift-cipher";
 import Popup from "../../components/popup";
+import challenges from "./challenges.json";
+import { useRouter } from "next/router";
 
 let socket;
 
@@ -13,12 +15,11 @@ const Editor = () => {
   const [gameWon, setGameWon] = useState(true);
   const [count, setCount] = useState([1, 2]);
   const [output, setOutput] = useState();
-  const id = 612;
+  const router = useRouter();
+  const { opponent } = router.query;
   const [partnerSubmitted, setpartnerSubmitted] = useState(false);
 
-  const clients = [];
-
-  //   const challengeId = id[Math.floor(Math.random() * id.length)];
+  const cipher = new ShiftCipher();
 
   useEffect(() => {
     socketInitializer();
@@ -27,10 +28,6 @@ const Editor = () => {
   const socketInitializer = async () => {
     await fetch("../api/socket");
     socket = io();
-
-    socket.on("connect", () => {
-      console.log("connected");
-    });
 
     socket.on("update-input", (msg) => {
       if (msg.user === localStorage.getItem("nickname")) {
@@ -48,11 +45,14 @@ const Editor = () => {
     });
   };
 
-  // const id = [613, 618, 629, 638];
+  const encrypt = (text) => {
+    return cipher.encode(text);
+  };
 
-  // const challengeId = id[Math.floor(Math.random() * id.length)];
+  const decrypt = (text) => {
+    return cipher.decode(text);
+  };
 
-  const challengeId = 613;
   const challenge = Object.values(challenges).filter(
     (item) => 613 === item.challengeId
   );
@@ -116,13 +116,16 @@ const Editor = () => {
           </ProblemDescription>
         </ProblemStatement>
         <Opponent>
-          <OpponentName>Opponent Name: Serial Parser</OpponentName>
+          {partnerSubmitted && <div>YOU LOST</div>}
+          <OpponentName>Opponent Name: {opponent}</OpponentName>
           <OpponentInfo>
             <Submission>Last Submission: No Submission</Submission>
             <CasePassed>Case CasePassed: 0/4</CasePassed>
           </OpponentInfo>
 
-          <OppoInputScreen value={partnerCode}></OppoInputScreen>
+          <OppoInputScreen
+            value={partnerCode?.length && encrypt(partnerCode)}
+          ></OppoInputScreen>
         </Opponent>
       </OpponentEditor>
 
@@ -141,6 +144,7 @@ const Editor = () => {
                   return <Line key={index}>{element}</Line>;
                 })}
               </Lines>
+
               <InputScreen
                 onChange={handleKeyUp}
                 onKeyPress={(e) => handleEnter(e)}
@@ -171,7 +175,6 @@ const EditorContainer = styled.div`
   background-color: var(--dark);
   color: #ffffff;
   @media screen and (min-width: 1441px) {
-    // padding: 3% 15%;
   }
 `;
 
@@ -224,6 +227,7 @@ const OppoInputScreen = styled.textarea`
   font-size: 14px;
   margin-top: var(--spacingXS);
   border-left: 2px solid (--dark);
+  filter: blur(2px);
   resize: none; /*remove the resize handle on the bottom right*/
 `;
 
