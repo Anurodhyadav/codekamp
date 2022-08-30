@@ -14,11 +14,10 @@ const SocketHandler = (req, res) => {
       })
         socket.on('code-submit', code_submition => {
             socket.broadcast.emit('user-submit-code', code_submition);
-      })
-      // socket.emit('news', { hello: 'world' });
-      // socket.on('user', function (data) {
-      //   socket.broadcast.emit('broad-cast-user', data);
-      // })
+        })
+        socket.on('user-online', user => {
+            socket.broadcast.emit('broadcast-user', user);
+        } )
     })
   }
   res.end()
