@@ -1,19 +1,58 @@
+
 import styled from "styled-components";
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
+import { io } from "socket.io-client";
+
+let socket;
+
 import challenges from "./challenges.json";
+
 
 const Editor = () => {
   const [code, setCode] = useState();
+  const [partnerCode, setpartnerCode] = useState();
   const [i, setI] = useState(2);
   const [count, setCount] = useState([1, 2]);
   const [output, setOutput] = useState();
-  const id = [613, 618, 629, 638];
+  const id = 612;
 
-  const challengeId = id[Math.floor(Math.random() * id.length)];
+  const clients = [];
 
-  const challenge = Object.values(challenges).filter(
-    (item) => challengeId === item.challengeId
-  );
+  //   const challengeId = id[Math.floor(Math.random() * id.length)];
+
+  useEffect(() => {
+    socketInitializer()
+  }
+    , [])
+
+  const socketInitializer = async () => {
+    await fetch('../api/socket');
+    socket = io()
+
+    socket.on('connect', () => {
+      console.log('connected');
+    })
+
+    socket.on('update-input', msg => {
+      if (msg.user === localStorage.getItem('nickname')) {
+        setCode(msg.code);
+      }
+      if (msg.user !== localStorage.getItem('nickname')) {
+        setpartnerCode(msg.code);
+      }
+    
+    })
+
+    // socket.on('broad-cast-user', data => {
+    //   console.log('this is the user data i need', data);
+    // })
+
+    // socket.on('news', function (data) {
+    //   const nickname = localStorage.getItem('nickname');
+    //   socket.emit('user', nickname);
+    // });
+  }
 
   const runCode = () => {
     fetch("https://api.programiz.pro/api/Challenge/run", {
@@ -35,8 +74,13 @@ const Editor = () => {
       });
   };
 
-  const handleKeyUp = (value) => {
-    setCode(value);
+  const handleKeyUp = (e) => {
+    setCode(e.target.value);
+    const emit_value = {
+      user: localStorage.getItem('nickname'),
+      code: e.target.value
+    }
+    socket.emit('input-change', emit_value)
   };
 
   const handleEnter = (e) => {
@@ -48,14 +92,15 @@ const Editor = () => {
 
   return (
     <EditorContainer>
+
       <Header>
         <Title>Programming Challenge</Title>
-        <Question>{challenge[0].question}</Question>
+        <Question>{challenges.challenge1.question}</Question>
       </Header>
       <ProblemDescription>
         <Description>Problem Description:</Description>
         <Tasks>
-          {Object.values(challenge[0].task).map((task) => {
+          {Object.values(challenges.challenge1.task).map((task) => {
             return <li>{task}</li>;
           })}
         </Tasks>
@@ -66,8 +111,8 @@ const Editor = () => {
             <Run onClick={() => runCode(code)}>Run</Run>
             <IDE>
               <InputScreen
-                onKeyUp={(e) => handleKeyUp(e.target.value)}
                 onKeyPress={(e) => handleEnter(e)}
+                value={code} onChange={handleKeyUp}
               ></InputScreen>
               <File>
                 <FileName>
@@ -89,7 +134,7 @@ const Editor = () => {
         <OpponentEditor>
           <Input>
             <IDE>
-              <InputScreen></InputScreen>
+              <InputScreen value={partnerCode}></InputScreen>
               <File>
                 <FileName>
                   <p>main.py</p>
@@ -100,6 +145,20 @@ const Editor = () => {
           </Input>
         </OpponentEditor>
       </EditorBody>
+
+      {/* <Input>
+
+        <h2>Challenge :</h2>
+        <Title>Start coding :</Title>
+        <IDE value={code} onChange={handleKeyUp}></IDE>
+        <Submit onClick={() => runCode(code)}>Run</Submit>
+
+      </Input>
+      <Output>
+        <h2>Output :</h2>
+        <OutputScreen>{output}</OutputScreen> */}
+      {/* </Output> */}
+
     </EditorContainer>
   );
 };
