@@ -17,6 +17,10 @@ body {
   margin: 0;
   font-family: 'Rubik', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    font-family: 'Rubik', sans-serif;
+    color: var(--lightPurple);
+    background: var(--dark);
+    line-height: 150%;
 }
 
 a {
@@ -26,18 +30,6 @@ a {
 
 * {
   box-sizing: border-box;
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-  body {
-    font-family: 'Rubik', sans-serif;
-    color: var(--lightPurple);
-    background: var(--dark);
-    line-height: 150%;
-  }
 }
 
 
