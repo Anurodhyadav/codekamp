@@ -1,15 +1,16 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { io } from "socket.io-client";
+import challenges from "./challenges.json";
+import Popup from "../../components/popup";
 
 let socket;
-
-import challenges from "./challenges.json";
 
 const Editor = () => {
   const [code, setCode] = useState();
   const [partnerCode, setpartnerCode] = useState();
   const [i, setI] = useState(2);
+  const [gameWon, setGameWon] = useState(true);
   const [count, setCount] = useState([1, 2]);
   const [output, setOutput] = useState();
   const id = 612;
@@ -99,33 +100,7 @@ const Editor = () => {
 
   return (
     <EditorContainer>
-      {/* <Header>
-        <Title>Programming Challenge</Title>
-        <Question>{challenges.challenge1.question}</Question>
-      </Header>
-      <ProblemDescription>
-        <Description>Problem Description:</Description>
-        <Tasks>
-          {Object.values(challenges.challenge1.task).map((task) => {
-            return <li>{task}</li>;
-          })}
-        </Tasks>
-      </ProblemDescription>
-      <EditorBody>
-        <UserEditor>
-          <Input>
-            <Run onClick={() => runCode(code)}>Run</Run>
-            <IDE>
-              <InputScreen
-                onKeyPress={(e) => handleEnter(e)}
-                value={code} onChange={handleKeyUp}
-              ></InputScreen>
-              <File>
-                <FileName>
-                  <p>main.py</p>
-                </FileName>
-              </File>
-======= */}
+      {gameWon && <Popup setGameWon={setGameWon} />}
       <OpponentEditor>
         <ProblemStatement>
           <Header>
@@ -166,33 +141,6 @@ const Editor = () => {
                   return <Line key={index}>{element}</Line>;
                 })}
               </Lines>
-              {/* <<<<<<< HEAD
-            </IDE>
-          </Input>
-          <OutputScreen>
-            <OutputHeader>Output</OutputHeader>
-            <Output>{output}</Output>
-          </OutputScreen>
-        </UserEditor>
-        <div>
-          {partnerSubmitted &&  'Opponent Submitted Code'}
-        <OpponentEditor>
-          <Input>
-            <IDE>
-              <InputScreen value={partnerCode}></InputScreen>
-              <File>
-                <FileName>
-                  <p>main.py</p>
-                </FileName>
-              </File>
-              <Lines></Lines>
-            </IDE>
-          </Input>
-        </OpponentEditor>
-        </div>
-       
-      </EditorBody> */}
-
               <InputScreen
                 onChange={handleKeyUp}
                 onKeyPress={(e) => handleEnter(e)}
@@ -234,7 +182,6 @@ const Header = styled.div`
 
 const FlexRow = styled.div`
   display: flex;
-  overflow-y: scroll;
 `;
 
 const ProblemDescription = styled.div`
