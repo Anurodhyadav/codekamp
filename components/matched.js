@@ -18,11 +18,13 @@ export default function Matched(props) {
     }, 1000);
 
   useEffect(() => {
+    const opponent = JSON.parse(props.opponent);
+
     if (timeLeft < 1) {
       clearInterval(countDown);
       router.push({
         pathname: "/challenges/editor",
-        query: { opponent: props.opponent },
+        query: opponent,
       });
     }
   });
@@ -33,7 +35,7 @@ export default function Matched(props) {
       <Battle>
         <Info>
           <Profile>CC</Profile>
-          <Name>{localStorage.getItem("nickname")}</Name>
+          <Name>{JSON.parse(localStorage.getItem("nickname")).name}</Name>
         </Info>
 
         <ImageContainer>
@@ -42,7 +44,7 @@ export default function Matched(props) {
 
         <Info>
           <Profile>SP</Profile>
-          <Name>{props.opponent}</Name>
+          <Name>{JSON.parse(props.opponent).name}</Name>
         </Info>
       </Battle>
       {startCountDown && (

@@ -4,7 +4,11 @@ import styled from "styled-components";
 export default function LookingForAMatch() {
   const [nickname, setNickname] = useState();
   useEffect(() => {
-    setNickname(localStorage.getItem("nickname").substring(0, 2).toUpperCase());
+    setNickname(
+      JSON.parse(localStorage.getItem("nickname"))
+        .name.substring(0, 2)
+        .toUpperCase()
+    );
   }, []);
 
   return (

@@ -1,0 +1,9 @@
+{
+  "/_app": "pages/_app.js",
+  "/_error": "pages/_error.js",
+  "/_document": "pages/_document.js",
+  "/matchpage": "pages/matchpage.js",
+  "/challenges/editor": "pages/challenges/editor.js",
+  "/api/socket": "pages/api/socket.js",
+  "/api/account/login": "pages/api/account/login.js"
+}

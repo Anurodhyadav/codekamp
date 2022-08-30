@@ -5,15 +5,13 @@ import axios, { AxiosResponse } from "axios";
 import { useRouter } from "next/router";
 import { server } from "../config/config";
 
-
 export default function Home() {
-  const [name, setname] = useState("");
+  const [user, setUser] = useState("");
   const router = useRouter();
-
 
   useEffect(() => {
     localStorage.clear();
-  },[])
+  }, []);
 
   const axiosInstance = axios.create({
     baseURL: `${server}/api`,
@@ -24,11 +22,11 @@ export default function Home() {
   });
 
   const handleSubmit = async () => {
-    localStorage.setItem("nickname", name);
+    localStorage.setItem("nickname", JSON.stringify(user));
     const response = await axiosInstance("/account/login", {
       method: "POST",
       data: {
-        name: name,
+        name: user.name,
         password: Math.random()
           .toString(36)
           .replace(/[^a-z]+/g, "")
@@ -42,7 +40,8 @@ export default function Home() {
   };
 
   const handleNameChange = (e) => {
-    setname(e.target.value);
+    const data = { name: e.target.value, isReady: false, testPassed: false };
+    setUser(data);
   };
   return (
     <Container>
