@@ -1,13 +1,10 @@
-
 import styled from "styled-components";
-
 import { useState, useEffect } from "react";
 import { io } from "socket.io-client";
 
 let socket;
 
 import challenges from "./challenges.json";
-
 
 const Editor = () => {
   const [code, setCode] = useState();
@@ -23,45 +20,41 @@ const Editor = () => {
   //   const challengeId = id[Math.floor(Math.random() * id.length)];
 
   useEffect(() => {
-    socketInitializer()
-  }
-    , [])
+    socketInitializer();
+  }, []);
 
   const socketInitializer = async () => {
-    await fetch('../api/socket');
-    socket = io()
+    await fetch("../api/socket");
+    socket = io();
 
-    socket.on('connect', () => {
-      console.log('connected');
-    })
+    socket.on("connect", () => {
+      console.log("connected");
+    });
 
-    socket.on('update-input', msg => {
-      if (msg.user === localStorage.getItem('nickname')) {
+    socket.on("update-input", (msg) => {
+      if (msg.user === localStorage.getItem("nickname")) {
         setCode(msg.code);
       }
-      if (msg.user !== localStorage.getItem('nickname')) {
+      if (msg.user !== localStorage.getItem("nickname")) {
         setpartnerCode(msg.code);
       }
-    
-    })
+    });
 
-    socket.on('user-submit-code', code_submition => {
-      if (code_submition.coder !== localStorage.getItem('nickname')) {
+    socket.on("user-submit-code", (code_submition) => {
+      if (code_submition.coder !== localStorage.getItem("nickname")) {
         setpartnerSubmitted(true);
       }
-      
-    })
-
-  }
+    });
+  };
 
   // const id = [613, 618, 629, 638];
 
   // const challengeId = id[Math.floor(Math.random() * id.length)];
 
+  const challengeId = 613;
   const challenge = Object.values(challenges).filter(
     (item) => 613 === item.challengeId
   );
-
 
   const runCode = () => {
     fetch("https://api.programiz.pro/api/Challenge/run", {
@@ -81,20 +74,20 @@ const Editor = () => {
         const data = json.data;
         setOutput(data.actualOutput);
         const code_submition = {
-          coder: localStorage.getItem('nickname'),
-          code_submitted: true
-        }
-        socket.emit('code-submit',code_submition)
+          coder: localStorage.getItem("nickname"),
+          code_submitted: true,
+        };
+        socket.emit("code-submit", code_submition);
       });
   };
 
   const handleKeyUp = (e) => {
     setCode(e.target.value);
     const emit_value = {
-      user: localStorage.getItem('nickname'),
-      code: e.target.value
-    }
-    socket.emit('input-change', emit_value)
+      user: localStorage.getItem("nickname"),
+      code: e.target.value,
+    };
+    socket.emit("input-change", emit_value);
   };
 
   const handleEnter = (e) => {
@@ -106,8 +99,6 @@ const Editor = () => {
 
   return (
     <EditorContainer>
-
-
       {/* <Header>
         <Title>Programming Challenge</Title>
         <Question>{challenges.challenge1.question}</Question>
@@ -170,13 +161,12 @@ const Editor = () => {
               </FileName>
             </File>
             <FlexRow>
-
               <Lines>
                 {count.map((element, index) => {
                   return <Line key={index}>{element}</Line>;
                 })}
               </Lines>
-{/* <<<<<<< HEAD
+              {/* <<<<<<< HEAD
             </IDE>
           </Input>
           <OutputScreen>
@@ -203,7 +193,6 @@ const Editor = () => {
        
       </EditorBody> */}
 
-
               <InputScreen
                 onChange={handleKeyUp}
                 onKeyPress={(e) => handleEnter(e)}
@@ -217,8 +206,6 @@ const Editor = () => {
           <Output>{output}</Output>
         </OutputScreen>
       </UserEditor>
-
-
     </EditorContainer>
   );
 };
@@ -226,8 +213,8 @@ const Editor = () => {
 export default Editor;
 
 const Title = styled.h1`
-font-weight: 700;
-font-size: 28px;
+  font-weight: 700;
+  font-size: 28px;
 `;
 
 const EditorContainer = styled.div`
@@ -251,48 +238,47 @@ const FlexRow = styled.div`
 `;
 
 const ProblemDescription = styled.div`
-font-weight: 200;
-font-size: 16px;
+  font-weight: 200;
+  font-size: 16px;
 `;
 
-
 const UserEditor = styled.div`
-  width:50%;
-  height:100vh;
+  width: 50%;
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color:#000000;
+  background-color: #000000;
   padding-top: var(--spacingS);
 `;
 
 const Opponent = styled.div`
-flex-grow:1;
-margin-top:2.5%;
-
+  flex-grow: 1;
+  margin-top: 2.5%;
 `;
 
 const OpponentEditor = styled.div`
-  width:50%;
-  display:flex;
+  width: 50%;
+  display: flex;
   flex-direction: column;
   padding: var(--spacingS);
-  justify-content:space-between;
-  `;
+  justify-content: space-between;
+`;
 const ProblemStatement = styled.div`
-  flex-grow:0;
-  margin-bottom:2.5%;
+  flex-grow: 0;
+  margin-bottom: 2.5%;
 `;
 
 const OppoInputScreen = styled.textarea`
-  height:90%;
+  height: 90%;
   background: var(--dark);
   width: 100%;
   color: #ffffff;
   line-height: 135%;
   font-size: 14px;
-  margin-top:var(--spacingXS);
+  margin-top: var(--spacingXS);
   border-left: 2px solid (--dark);
-  resize: none; /*remove the resize handle on the bottom right*/`;
+  resize: none; /*remove the resize handle on the bottom right*/
+`;
 
 const Input = styled.div`
   position: relative;
@@ -301,8 +287,8 @@ const OpponentName = styled.div`
   position: relative;
 `;
 const OpponentInfo = styled.div`
-display:flex;
-justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 `;
 const Submission = styled.div`
   position: relative;
@@ -314,12 +300,11 @@ const IDE = styled.div``;
 
 const Lines = styled.div`
   width: 30px;
-  height:70vh;
+  height: 70vh;
   list-style: none;
   color: var(--lightPurple);
-  padding-top:1%;
-  overflow:hidden;
-
+  padding-top: 1%;
+  overflow: hidden;
 `;
 
 const Line = styled.li`
@@ -340,7 +325,7 @@ const FileName = styled.div`
   width: 60px;
   height: 50px;
   font-size: 12px;
-  font-weight:200;
+  font-weight: 200;
   margin-left: 30px;
   color: gray;
   border: 2px solid gray;
@@ -351,15 +336,15 @@ const FileName = styled.div`
 `;
 
 const InputScreen = styled.textarea`
-  padding:1%;
-  padding-bottom:5%;
+  padding: 1%;
+  padding-bottom: 5%;
   background: var(--dark);
   width: calc(100% - 30px);
   height: 70vh;
   color: var(--lightPurple);
   line-height: 135%;
   font-size: 14px;
-  border-left: 2px solid gray);
+  border-left: 2px solid gray;
 
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
@@ -369,13 +354,12 @@ const InputScreen = styled.textarea`
     -moz-box-shadow: none;
     box-shadow: none;
     outline: 0;
-    }
   }
-  `;
+`;
 
 const Tasks = styled.ul`
-font-weight: 200;
-font-size: 16px;
+  font-weight: 200;
+  font-size: 16px;
 `;
 
 const OutputScreen = styled.div`
@@ -383,33 +367,31 @@ const OutputScreen = styled.div`
   height: 30vh;
   background: var(--dark);
   color: white;
-  align-self:end;
-  `;
-
-const Output = styled.div`
-
+  align-self: end;
 `;
+
+const Output = styled.div``;
 
 const OutputHeader = styled.div`
   background: #000000;
-  padding-top:1%;
-  padding-bottom:1%;
+  padding-top: 1%;
+  padding-bottom: 1%;
 `;
 
 const Question = styled.h2`
-font-weight: 400;
-font-size: 18px;
+  font-weight: 400;
+  font-size: 18px;
 `;
 
 const Run = styled.button`
-  position:absolute;
-  top:0;
-  right:0;
+  position: absolute;
+  top: 0;
+  right: 0;
   width: 85px;
   height: 30px;
   border: none;
   border-radius: 3px;
-  cursor:pointer;
+  cursor: pointer;
   &:hover {
     background: var(--lightPurple);
     color: var(--dark);

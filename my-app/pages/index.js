@@ -2,7 +2,7 @@ import styled from "styled-components";
 import Image from "next/image";
 import { useState } from "react";
 import axios, { AxiosResponse } from "axios";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 // import server from "../config/config"
 
 export default function Home() {
@@ -24,16 +24,15 @@ export default function Home() {
       data: {
         name: name,
         password: Math.random()
-        .toString(36)
-        .replace(/[^a-z]+/g, "")
-        .substr(0, 5),
+          .toString(36)
+          .replace(/[^a-z]+/g, "")
+          .substr(0, 5),
       },
     });
     if (response.status === 200) {
       localStorage.setItem("token", response.data.accessToken);
-      router.push("/challenges/editor");
+      router.push("/matchpage");
     }
-
   };
 
   const handleNameChange = (e) => {
@@ -59,7 +58,7 @@ export default function Home() {
           />
         </Label>
         <input
-          class="primary-btn marginS"
+          className="primary-btn marginS"
           type="submit"
           value="Find a warrior"
           onClick={handleSubmit}
