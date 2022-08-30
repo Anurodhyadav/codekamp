@@ -2,10 +2,11 @@ import styled from "styled-components";
 import Loser from "./loser";
 import Winner from "./Winner";
 
-const Popup = ({ setGameWon }) => {
+const Popup = ({ partnerWon }) => {
   return (
     <Container>
-      <Winner setGameWon={setGameWon}></Winner>
+      partnerWon ? <Loser></Loser> : <Winner></Winner>
+      {/* <Winner setGameWon={setGameWon}></Winner> */}
       <CloseBtn onClick={() => setGameWon(false)}>X</CloseBtn>
     </Container>
   );

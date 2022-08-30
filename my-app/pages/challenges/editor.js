@@ -2,9 +2,10 @@ import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { io } from "socket.io-client";
 import { ShiftCipher } from "shift-cipher";
-import Popup from "../../components/popup";
 import challenges from "./challenges.json";
 import { useRouter } from "next/router";
+import Loser from "../../components/loser";
+import Winner from "../../components/Winner";
 
 let socket;
 
@@ -12,12 +13,11 @@ const Editor = () => {
   const [code, setCode] = useState();
   const [partnerCode, setpartnerCode] = useState();
   const [i, setI] = useState(2);
-  const [gameWon, setGameWon] = useState(true);
+  const [apiResponse, setAPIResponse] = useState();
   const [count, setCount] = useState([1, 2]);
   const [output, setOutput] = useState();
   const router = useRouter();
-  const { opponent } = router.query;
-  const [partnerSubmitted, setpartnerSubmitted] = useState(false);
+  const [partnerWon, setpartnerWon] = useState(false);
 
   const cipher = new ShiftCipher();
 
@@ -40,7 +40,7 @@ const Editor = () => {
 
     socket.on("user-submit-code", (code_submition) => {
       if (code_submition.coder !== localStorage.getItem("nickname")) {
-        setpartnerSubmitted(true);
+        setpartnerWon(true);
       }
     });
   };
@@ -73,12 +73,16 @@ const Editor = () => {
       .then((response) => response.json())
       .then((json) => {
         const data = json.data;
+        setAPIResponse(data);
         setOutput(data.actualOutput);
         const code_submition = {
           coder: localStorage.getItem("nickname"),
           code_submitted: true,
         };
-        socket.emit("code-submit", code_submition);
+
+        data &&
+          data.allAvailableTestsPassed &&
+          socket.emit("code-submit", code_submition);
       });
   };
 
@@ -100,7 +104,8 @@ const Editor = () => {
 
   return (
     <EditorContainer>
-      {gameWon && <Popup setGameWon={setGameWon} />}
+      {apiResponse && apiResponse.allAvailableTestsPassed && <Winner></Winner>}
+      {partnerWon && <Loser></Loser>}
       <OpponentEditor>
         <ProblemStatement>
           <Header>
@@ -109,20 +114,15 @@ const Editor = () => {
           </Header>
           <ProblemDescription>
             <Tasks>
-              {Object.values(challenge[0].task).map((task) => {
-                return <li>{task}</li>;
+              {Object.values(challenge[0].task).map((task, index) => {
+                return <li key={index}>{task}</li>;
               })}
             </Tasks>
           </ProblemDescription>
         </ProblemStatement>
         <Opponent>
-          {partnerSubmitted && <div>YOU LOST</div>}
-          <OpponentName>Opponent Name: {opponent}</OpponentName>
-          <OpponentInfo>
-            <Submission>Last Submission: No Submission</Submission>
-            <CasePassed>Case CasePassed: 0/4</CasePassed>
-          </OpponentInfo>
-
+          <OpponentName>Opponent Name: {router.query.name}</OpponentName>
+          <OpponentInfo></OpponentInfo>
           <OppoInputScreen
             value={partnerCode?.length && encrypt(partnerCode)}
           ></OppoInputScreen>
@@ -241,12 +241,7 @@ const OpponentInfo = styled.div`
   display: flex;
   justify-content: space-between;
 `;
-const Submission = styled.div`
-  position: relative;
-`;
-const CasePassed = styled.div`
-  position: relative;
-`;
+
 const IDE = styled.div``;
 
 const Lines = styled.div`
