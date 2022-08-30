@@ -16,6 +16,7 @@ const Editor = () => {
   const [count, setCount] = useState([1, 2]);
   const [output, setOutput] = useState();
   const id = 612;
+  const [partnerSubmitted, setpartnerSubmitted] = useState(false);
 
   const clients = [];
 
@@ -42,6 +43,13 @@ const Editor = () => {
         setpartnerCode(msg.code);
       }
     
+    })
+
+    socket.on('user-submit-code', code_submition => {
+      if (code_submition.coder !== localStorage.getItem('nickname')) {
+        setpartnerSubmitted(true);
+      }
+      
     })
 
     // socket.on('broad-cast-user', data => {
@@ -71,6 +79,11 @@ const Editor = () => {
       .then((json) => {
         const data = json.data;
         setOutput(data.actualOutput);
+        const code_submition = {
+          coder: localStorage.getItem('nickname'),
+          code_submitted: true
+        }
+        socket.emit('code-submit',code_submition)
       });
   };
 
@@ -131,6 +144,8 @@ const Editor = () => {
             <Output>{output}</Output>
           </OutputScreen>
         </UserEditor>
+        <div>
+          {partnerSubmitted &&  'Opponent Submitted Code'}
         <OpponentEditor>
           <Input>
             <IDE>
@@ -144,6 +159,8 @@ const Editor = () => {
             </IDE>
           </Input>
         </OpponentEditor>
+        </div>
+       
       </EditorBody>
 
       {/* <Input>

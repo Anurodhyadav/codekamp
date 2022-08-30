@@ -23,7 +23,10 @@ export default function Home() {
       method: "POST",
       data: {
         name: name,
-        password: "#aky12345",
+        password: Math.random()
+        .toString(36)
+        .replace(/[^a-z]+/g, "")
+        .substr(0, 5),
       },
     });
     if (response.status === 200) {

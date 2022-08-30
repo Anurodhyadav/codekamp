@@ -12,6 +12,9 @@ const SocketHandler = (req, res) => {
       socket.on('input-change', msg_and_user => {
         socket.broadcast.emit('update-input', msg_and_user);
       })
+        socket.on('code-submit', code_submition => {
+            socket.broadcast.emit('user-submit-code', code_submition);
+      })
       // socket.emit('news', { hello: 'world' });
       // socket.on('user', function (data) {
       //   socket.broadcast.emit('broad-cast-user', data);

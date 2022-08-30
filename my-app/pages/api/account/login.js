@@ -9,11 +9,15 @@ export default async function login(req, res) {
     if (req.method == "POST") {
         try {
             if (req.body.name && req.body.password) {
-                const token = jwt.sign({ user: req.body.name }, secret_key || '', { expiresIn: '7d' })
+                const user = {
+                    name: req.body.name,
+                    password: req.body.password
+                }
+                const token = jwt.sign({ user: user }, secret_key || '', { expiresIn: '7d' })
                 res.status(200).send({ accessToken: token, user: req.body.name })
             }
             else {
-                res.status(401).send({ error: "Wrong password" })
+                res.status(401).send({ error: "Something went wrong" })
             }
 
         } catch (error) {
