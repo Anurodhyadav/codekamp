@@ -27,9 +27,6 @@ const Editor = () => {
     await fetch("../api/socket");
     socket = io();
 
-    socket.on("connect", () => {
-      console.log("connected");
-    });
 
     socket.on("update-input", (msg) => {
       if (msg.user === localStorage.getItem("nickname")) {
@@ -99,33 +96,6 @@ const Editor = () => {
 
   return (
     <EditorContainer>
-      {/* <Header>
-        <Title>Programming Challenge</Title>
-        <Question>{challenges.challenge1.question}</Question>
-      </Header>
-      <ProblemDescription>
-        <Description>Problem Description:</Description>
-        <Tasks>
-          {Object.values(challenges.challenge1.task).map((task) => {
-            return <li>{task}</li>;
-          })}
-        </Tasks>
-      </ProblemDescription>
-      <EditorBody>
-        <UserEditor>
-          <Input>
-            <Run onClick={() => runCode(code)}>Run</Run>
-            <IDE>
-              <InputScreen
-                onKeyPress={(e) => handleEnter(e)}
-                value={code} onChange={handleKeyUp}
-              ></InputScreen>
-              <File>
-                <FileName>
-                  <p>main.py</p>
-                </FileName>
-              </File>
-======= */}
       <OpponentEditor>
         <ProblemStatement>
           <Header>
@@ -141,6 +111,7 @@ const Editor = () => {
           </ProblemDescription>
         </ProblemStatement>
         <Opponent>
+          {partnerSubmitted && <div>YOU LOST</div>}
           <OpponentName>Opponent Name: Serial Parser</OpponentName>
           <OpponentInfo>
             <Submission>Last Submission: No Submission</Submission>
@@ -166,32 +137,6 @@ const Editor = () => {
                   return <Line key={index}>{element}</Line>;
                 })}
               </Lines>
-              {/* <<<<<<< HEAD
-            </IDE>
-          </Input>
-          <OutputScreen>
-            <OutputHeader>Output</OutputHeader>
-            <Output>{output}</Output>
-          </OutputScreen>
-        </UserEditor>
-        <div>
-          {partnerSubmitted &&  'Opponent Submitted Code'}
-        <OpponentEditor>
-          <Input>
-            <IDE>
-              <InputScreen value={partnerCode}></InputScreen>
-              <File>
-                <FileName>
-                  <p>main.py</p>
-                </FileName>
-              </File>
-              <Lines></Lines>
-            </IDE>
-          </Input>
-        </OpponentEditor>
-        </div>
-       
-      </EditorBody> */}
 
               <InputScreen
                 onChange={handleKeyUp}
