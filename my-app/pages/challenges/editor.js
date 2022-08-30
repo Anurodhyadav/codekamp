@@ -52,21 +52,22 @@ const Editor = () => {
       
     })
 
-    // socket.on('broad-cast-user', data => {
-    //   console.log('this is the user data i need', data);
-    // })
-
-    // socket.on('news', function (data) {
-    //   const nickname = localStorage.getItem('nickname');
-    //   socket.emit('user', nickname);
-    // });
   }
+
+  // const id = [613, 618, 629, 638];
+
+  // const challengeId = id[Math.floor(Math.random() * id.length)];
+
+  const challenge = Object.values(challenges).filter(
+    (item) => 613 === item.challengeId
+  );
+
 
   const runCode = () => {
     fetch("https://api.programiz.pro/api/Challenge/run", {
       method: "POST",
       body: JSON.stringify({
-        challengeId: id,
+        challengeId: 613,
         code: code,
       }),
       headers: {
@@ -106,7 +107,8 @@ const Editor = () => {
   return (
     <EditorContainer>
 
-      <Header>
+
+      {/* <Header>
         <Title>Programming Challenge</Title>
         <Question>{challenges.challenge1.question}</Question>
       </Header>
@@ -132,11 +134,49 @@ const Editor = () => {
                   <p>main.py</p>
                 </FileName>
               </File>
+======= */}
+      <OpponentEditor>
+        <ProblemStatement>
+          <Header>
+            <Title>{challenge[0].title}</Title>
+            <Question>{challenge[0].question}</Question>
+          </Header>
+          <ProblemDescription>
+            <Tasks>
+              {Object.values(challenge[0].task).map((task) => {
+                return <li>{task}</li>;
+              })}
+            </Tasks>
+          </ProblemDescription>
+        </ProblemStatement>
+        <Opponent>
+          <OpponentName>Opponent Name: Serial Parser</OpponentName>
+          <OpponentInfo>
+            <Submission>Last Submission: No Submission</Submission>
+            <CasePassed>Case CasePassed: 0/4</CasePassed>
+          </OpponentInfo>
+
+          <OppoInputScreen value={partnerCode}></OppoInputScreen>
+        </Opponent>
+      </OpponentEditor>
+
+      <UserEditor>
+        <Input>
+          <Run onClick={() => runCode(code)}>Run</Run>
+          <IDE>
+            <File>
+              <FileName>
+                <p>main.py</p>
+              </FileName>
+            </File>
+            <FlexRow>
+
               <Lines>
                 {count.map((element, index) => {
                   return <Line key={index}>{element}</Line>;
                 })}
               </Lines>
+{/* <<<<<<< HEAD
             </IDE>
           </Input>
           <OutputScreen>
@@ -161,20 +201,23 @@ const Editor = () => {
         </OpponentEditor>
         </div>
        
-      </EditorBody>
+      </EditorBody> */}
 
-      {/* <Input>
 
-        <h2>Challenge :</h2>
-        <Title>Start coding :</Title>
-        <IDE value={code} onChange={handleKeyUp}></IDE>
-        <Submit onClick={() => runCode(code)}>Run</Submit>
+              <InputScreen
+                onChange={handleKeyUp}
+                onKeyPress={(e) => handleEnter(e)}
+              ></InputScreen>
+            </FlexRow>
+          </IDE>
+        </Input>
 
-      </Input>
-      <Output>
-        <h2>Output :</h2>
-        <OutputScreen>{output}</OutputScreen> */}
-      {/* </Output> */}
+        <OutputScreen>
+          <OutputHeader>Output</OutputHeader>
+          <Output>{output}</Output>
+        </OutputScreen>
+      </UserEditor>
+
 
     </EditorContainer>
   );
@@ -183,19 +226,17 @@ const Editor = () => {
 export default Editor;
 
 const Title = styled.h1`
-  text-align: center;
+font-weight: 700;
+font-size: 28px;
 `;
 
 const EditorContainer = styled.div`
-  padding: 3%;
   width: 100%;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  background-color: black;
-
+  background-color: var(--dark);
+  color: #ffffff;
   @media screen and (min-width: 1441px) {
-    padding: 3% 15%;
+    // padding: 3% 15%;
   }
 `;
 
@@ -204,62 +245,105 @@ const Header = styled.div`
   flex-direction: column;
 `;
 
-const ProblemDescription = styled.div``;
-
-const EditorBody = styled.div`
+const FlexRow = styled.div`
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  overflow-y: scroll;
 `;
 
+const ProblemDescription = styled.div`
+font-weight: 200;
+font-size: 16px;
+`;
+
+
 const UserEditor = styled.div`
+  width:50%;
+  height:100vh;
   display: flex;
   flex-direction: column;
-  padding-left: 3%;
+  background-color:#000000;
+  padding-top: var(--spacingS);
+`;
+
+const Opponent = styled.div`
+flex-grow:1;
+margin-top:2.5%;
+
 `;
 
 const OpponentEditor = styled.div`
-  padding: 3%;
+  width:50%;
+  display:flex;
+  flex-direction: column;
+  padding: var(--spacingS);
+  justify-content:space-between;
+  `;
+const ProblemStatement = styled.div`
+  flex-grow:0;
+  margin-bottom:2.5%;
 `;
+
+const OppoInputScreen = styled.textarea`
+  height:90%;
+  background: var(--dark);
+  width: 100%;
+  color: #ffffff;
+  line-height: 135%;
+  font-size: 14px;
+  margin-top:var(--spacingXS);
+  border-left: 2px solid (--dark);
+  resize: none; /*remove the resize handle on the bottom right*/`;
 
 const Input = styled.div`
-  display: flex;
-  flex-direction: column;
+  position: relative;
 `;
-
-const IDE = styled.div`
-  width: 550px;
+const OpponentName = styled.div`
+  position: relative;
 `;
+const OpponentInfo = styled.div`
+display:flex;
+justify-content: space-between;
+`;
+const Submission = styled.div`
+  position: relative;
+`;
+const CasePassed = styled.div`
+  position: relative;
+`;
+const IDE = styled.div``;
 
 const Lines = styled.div`
-  background: #1c1c1c;
   width: 30px;
-  height: 250px;
+  height:70vh;
   list-style: none;
+  color: var(--lightPurple);
+  padding-top:1%;
+  overflow:hidden;
+
 `;
 
 const Line = styled.li`
   list-style: none;
   margin-left: 12px;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 130%;
-  margin-top: 1px;
+  margin-top: 3.3px;
 `;
 
 const File = styled.div`
-  background: #1c1c1c;
+  background: #000000;
   height: 30px;
-  border-bottom: 3px solid gray;
+  border-bottom: 2px solid gray;
 `;
 
 const FileName = styled.div`
   width: 60px;
   height: 50px;
-  font-size: 13px;
+  font-size: 12px;
+  font-weight:200;
   margin-left: 30px;
-  color: white;
-  border: 3px solid gray;
-
+  color: gray;
+  border: 2px solid gray;
   p {
     text-align: center;
     margin-top: 2px;
@@ -267,57 +351,67 @@ const FileName = styled.div`
 `;
 
 const InputScreen = styled.textarea`
-  position: absolute;
-  width: 520px;
-  height: 250px;
-  background: var(--lightPurple);
-  color: #1c1c1c;
-  margin-left: 30px;
-  margin-top: 30px;
+  padding:1%;
+  padding-bottom:5%;
+  background: var(--dark);
+  width: calc(100% - 30px);
+  height: 70vh;
+  color: var(--lightPurple);
   line-height: 135%;
   font-size: 14px;
-  border-left: 3px solid gray;
-  font-family: "Rubik", sans-serif;
-`;
+  border-left: 2px solid gray);
+
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  resize: none; /*remove the resize handle on the bottom right*/
+  &:focus {
+    -moz-box-shadow: none;
+    box-shadow: none;
+    outline: 0;
+    }
+  }
+  `;
 
 const Tasks = styled.ul`
-  margin-left: 30px;
-`;
-
-const Description = styled.h2`
-  margin-left: 40px;
+font-weight: 200;
+font-size: 16px;
 `;
 
 const OutputScreen = styled.div`
-  width: 550px;
-  height: 250px;
-  background: #1c1c1c;
+  width: calc(100% - 30px);
+  height: 30vh;
+  background: var(--dark);
   color: white;
-`;
+  align-self:end;
+  `;
 
 const Output = styled.div`
-  margin-left: 3%;
+
 `;
 
-const OutputHeader = styled.h3`
-  padding-left: 3%;
+const OutputHeader = styled.div`
+  background: #000000;
+  padding-top:1%;
+  padding-bottom:1%;
 `;
 
 const Question = styled.h2`
-  text-align: center;
+font-weight: 400;
+font-size: 18px;
 `;
 
 const Run = styled.button`
+  position:absolute;
+  top:0;
+  right:0;
   width: 85px;
   height: 30px;
-  margin-top: 10px;
-  float: right;
-  align-self: flex-end;
   border: none;
   border-radius: 3px;
-
+  cursor:pointer;
   &:hover {
     background: var(--lightPurple);
-    color: #1c1c1c;
+    color: var(--dark);
   }
 `;
