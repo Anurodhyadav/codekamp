@@ -3,7 +3,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
-export default function Matched() {
+export default function Matched(props) {
   let i;
   const [timeLeft, setTimeLeft] = useState(10);
   const [startCountDown, setStartCountDown] = useState(false);
@@ -30,7 +30,7 @@ export default function Matched() {
       <Battle>
         <Info>
           <Profile>CC</Profile>
-          <Name>CamelCase</Name>
+          <Name>{ localStorage.getItem('nickname')}</Name>
         </Info>
 
         <ImageContainer>
@@ -39,7 +39,7 @@ export default function Matched() {
 
         <Info>
           <Profile>SP</Profile>
-          <Name>SerialParser</Name>
+          <Name>{ props.opponent}</Name>
         </Info>
       </Battle>
       {startCountDown && (

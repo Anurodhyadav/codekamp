@@ -14,7 +14,8 @@ import Matched from "../components/matched";
 let socket;
 
 export default function MatchPage() {
-    const [matched, setMatched] = useState(false);
+  const [matched, setMatched] = useState(false);
+  const [opponent, setopponentName] = useState("");
 
   useEffect(() => {
     socketInitializer();
@@ -33,7 +34,8 @@ export default function MatchPage() {
     });
       socket.on("broadcast-user", (user) => {
         if (user !== localStorage.getItem('nickname')) {
-            setMatched(true);
+          setMatched(true);
+          setopponentName(user);
      }
     });
       const FindOnlineUser = () => {
@@ -49,7 +51,7 @@ export default function MatchPage() {
         <LookingForAMatch></LookingForAMatch>
       ) : (
         <>
-          <Matched></Matched>
+          <Matched opponent = {opponent}></Matched>
         </>
       )}
     </>
