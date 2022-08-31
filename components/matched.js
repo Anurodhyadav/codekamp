@@ -10,15 +10,15 @@ export default function Matched(props) {
 
   const router = useRouter();
 
-  const countDown =
-    startCountDown &&
-    setInterval(() => {
-      i = timeLeft - 1;
-      setTimeLeft(i);
-    }, 1000);
-
   useEffect(() => {
     const opponent = JSON.parse(props.opponent);
+
+    const countDown =
+      startCountDown &&
+      setInterval(() => {
+        i = timeLeft - 1;
+        setTimeLeft(i);
+      }, 1000);
 
     if (timeLeft < 1) {
       clearInterval(countDown);
