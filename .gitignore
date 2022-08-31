@@ -1,4 +1,5 @@
 .env
+.next/
 .next/cache
 .next/server
 .next/static
