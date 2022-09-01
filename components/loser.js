@@ -1,52 +1,83 @@
 import styled from "styled-components";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
-const Loser = () => {
+const Loser = ({ opponentCode, title }) => {
   const router = useRouter();
+  const [viewOpponentCode, setViewOpponentCode] = useState(false);
   return (
-    <LoserContainer>
-      <Image src={"/asset/loser.svg"} height={280} width={250} />
-      <Points></Points>
-      <h1>SORRY YOU LOST</h1>
-      <Text>
-        It was a close battle but your opponent was more prepared than you. You
-        may challenge more warriors and hone your coding skills to perform
-        better
-      </Text>
-      <ButtonContainer>
-        <button
-          onClick={() => router.push("/matchpage")}
-          className="primary-btn"
-        >
-          Search for a new warrior
-        </button>
-        <Button onClick={() => router.push("/leaderboard")}>
-          See LeaderBoard
-        </Button>
-      </ButtonContainer>
-      <CloseBtn>X</CloseBtn>
-    </LoserContainer>
+    <ContainerFilter>
+      {" "}
+      <LoserContainer>
+        {!viewOpponentCode ? (
+          <>
+            <Image src={"/asset/loser.svg"} height={280} width={250} />
+            <Points></Points>
+            <h1>SORRY YOU LOST</h1>
+            <Text>
+              It was a close battle but your opponent was more prepared than
+              you. You may challenge more warriors and hone your coding skills
+              to perform better
+            </Text>
+          </>
+        ) : (
+          <>
+            <Title>{title}</Title>
+            <OppoInputScreen value={opponentCode}></OppoInputScreen>
+          </>
+        )}
+        <ButtonContainer>
+          <button
+            onClick={() => router.push("/matchpage")}
+            className="primary-btn"
+          >
+            Search for a new warrior
+          </button>
+          {!viewOpponentCode && (
+            <button
+              className="secondary-btn"
+              onClick={() => setViewOpponentCode(true)}
+              style={{ margin: "0 10px" }}
+            >
+              View Opponent Code
+            </button>
+          )}
+        </ButtonContainer>
+        <CloseContainer>
+          <Image src={"/asset/close.svg"} height={24} width={24} />
+        </CloseContainer>
+      </LoserContainer>
+    </ContainerFilter>
   );
 };
 
 export default Loser;
 
+const ContainerFilter = styled.div`
+  position: absolute;
+  height: 100vh;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 10;
+`;
+
 const LoserContainer = styled.div`
   display: flex;
   position: absolute;
-  top: 12%;
-  left: 15%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 10;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   background: #121212;
   border-radius: 8px;
-  padding: 0 10px;
   box-shadow: 0px 10px 20px rgb(0 0 0 / 50%);
-  width: 70%;
-  height: 85%;
+  width: 75%;
+  padding: var(--spacingM);
+  text-align: center;
 `;
 const Points = styled.text`
   color: #7ef535;
@@ -56,31 +87,36 @@ const Points = styled.text`
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
+  margin-top: var(--spacingS);
 `;
-
-const Button = styled.button`
-  width: 424px;
-  height: 53px;
-  border: 2px solid #ccccff;
-  border-radius: 5px;
-  background-color: var(--dark);
-  margin-left: 20px;
-`;
-
-const Text = styled.div`
-  text-align: center;
-  padding: 3%;
-`;
-
-const CloseBtn = styled.button`
+const CloseContainer = styled.div`
   position: absolute;
-  right: 20px;
   top: 20px;
-  border: none;
-  padding: 4px;
-  margin: 0;
-  background: transparent;
+  right: 20px;
   cursor: pointer;
-  font-size: 30px;
-  font-weight: 600;
+  &:hover {
+    transform: scale(1.2);
+  }
+`;
+
+const Text = styled.p`
+  text-align: center;
+`;
+
+const OppoInputScreen = styled.textarea`
+  height: 250px;
+  background: var(--dark);
+  width: 100%;
+  color: #ffffff;
+  line-height: 135%;
+  font-size: 14px;
+  margin-top: var(--spacingXS);
+  border-left: 2px solid (--dark);
+  resize: none; /*remove the resize handle on the bottom right*/
+`;
+
+const Title = styled.h1`
+  font-weight: 700;
+  font-size: 28px;
+  align-self: flex-start;
 `;

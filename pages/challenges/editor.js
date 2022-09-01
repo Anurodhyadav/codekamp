@@ -106,7 +106,9 @@ const Editor = () => {
   return (
     <EditorContainer>
       {apiResponse && apiResponse.allAvailableTestsPassed && <Winner></Winner>}
-      {partnerWon && <Loser></Loser>}
+      {partnerWon && (
+        <Loser opponentCode={partnerCode} title={challenge[0].title}></Loser>
+      )}
       <OpponentEditor>
         <ProblemStatement>
           <Header>
@@ -171,6 +173,7 @@ const Title = styled.h1`
 `;
 
 const EditorContainer = styled.div`
+  position: relative;
   width: 100%;
   display: flex;
   background-color: var(--dark);
