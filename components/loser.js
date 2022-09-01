@@ -2,7 +2,7 @@ import styled from "styled-components";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
-const Loser = () => {
+const Loser = ({ closeHandler }) => {
   const router = useRouter();
   return (
     <LoserContainer>
@@ -25,7 +25,7 @@ const Loser = () => {
           See LeaderBoard
         </Button>
       </ButtonContainer>
-      <CloseBtn>X</CloseBtn>
+      <CloseBtn onClick={closeHandler}>X</CloseBtn>
     </LoserContainer>
   );
 };

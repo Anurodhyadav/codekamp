@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import Image from "next/image";
 
-const Winner = () => {
+const Winner = ({ closeHandler }) => {
   return (
     <WinnerContainer>
       <Image src={"/asset/congratulations.svg"} height={280} width={250} />
@@ -17,7 +17,7 @@ const Winner = () => {
           Search for a new warrior
         </Button>
       </ButtonContainer>
-      <CloseBtn>X</CloseBtn>
+      <CloseBtn onClick={closeHandler}>X</CloseBtn>
     </WinnerContainer>
   );
 };

@@ -12,6 +12,8 @@ let socket;
 const Editor = () => {
   const [code, setCode] = useState();
   const [partnerCode, setpartnerCode] = useState();
+  const [closeWinnerPopUp, setCloseWinnerPopUp] = useState(false);
+  const [closeLoserPopUp, setCloseLoserPopUp] = useState(false);
   const [i, setI] = useState(2);
   const [apiResponse, setAPIResponse] = useState();
   const [count, setCount] = useState([1, 2]);
@@ -102,10 +104,24 @@ const Editor = () => {
     }
   };
 
+  const closeHandlerForWinnerPopUp = () => {
+    setCloseWinnerPopUp(true);
+  };
+
+  const closeHandlerForLoserPopUp = () => {
+    setCloseLoserPopUp(true);
+  };
+
   return (
     <EditorContainer>
-      {apiResponse && apiResponse.allAvailableTestsPassed && <Winner></Winner>}
-      {partnerWon && <Loser></Loser>}
+      {apiResponse &&
+        apiResponse.allAvailableTestsPassed &&
+        !closeWinnerPopUp && (
+          <Winner closeHandler={closeHandlerForWinnerPopUp}></Winner>
+        )}
+      {partnerWon && !closeLoserPopUp && (
+        <Loser closeHandler={closeHandlerForLoserPopUp}></Loser>
+      )}
       <OpponentEditor>
         <ProblemStatement>
           <Header>
