@@ -8,6 +8,7 @@
     border: 4px solid #CCCCFF;
     border-radius: 5px;
     background-color: var(--dark);
+    color: var(--lightPurple);
 }
 
 input,

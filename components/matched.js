@@ -5,33 +5,78 @@ import { useRouter } from "next/router";
 
 export default function Matched(props) {
   let i;
-  const [timeLeft, setTimeLeft] = useState(10);
-  const [startCountDown, setStartCountDown] = useState(false);
+  // const [timeLeft, setTimeLeft] = useState(10);
+  // const [startCountDown, setStartCountDown] = useState(false);
+  const [opponent, setOpponent] = useState({})
+  const [currentUser, setCurrentUser] = useState("")
 
   const router = useRouter();
 
+  // const countDown =
+  //   startCountDown &&
+  //   setInterval(() => {
+  //     i = timeLeft - 1;
+  //     setTimeLeft(i);
+  //   }, 1000);
+
   useEffect(() => {
-    const opponent = JSON.parse(props.opponent);
+    const opponent_data = JSON.parse(props.opponent);
+    setOpponent(opponent_data)
+    const current_user = props.currentUser;
+    setCurrentUser(current_user);
 
-    const countDown =
-      startCountDown &&
-      setInterval(() => {
-        i = timeLeft - 1;
-        setTimeLeft(i);
-      }, 1000);
 
-    if (timeLeft < 1) {
-      clearInterval(countDown);
-      router.push({
-        pathname: "/challenges/editor",
-        query: opponent,
-      });
-    }
-  });
+
+    // setInterval(() => {
+    //   setTimeLeft(timeLeft -1 )
+    // }, 1000)
+
+
+
+    // const startCounter = () => {
+    //   setTimeLeft((timeLeft) => timeLeft - 1);
+    //   if (timeLeft < 1) {
+    //      console.log("happended")
+    //   router.push({
+    //     pathname: "/challenges/editor",
+    //     query: {
+    //       opponent: opponent,
+    //       currentUser: currentUser
+    //     },
+    //   });
+    // }
+    // }
+
+    // setInterval(startCounter, 1000);
+    
+    // if (timeLeft < 1) {
+    //   clearInterval(countDown);
+    //   router.push({
+    //     pathname: "/challenges/editor",
+    //     query: {
+    //       opponent: opponent,
+    //       currentUser: currentUser
+    //     },
+    //   });
+    // }
+    // return () => {
+    //   clearInterval(startCounter);
+    // }
+  }, []);
+  
+  const RedirectToEditor = () => {
+    router.push({
+      pathname: "/challenges/editor",
+      query: {
+        opponentName: opponent.name,
+        currentUser: currentUser
+      },
+    });
+  }
 
   return (
     <Container>
-      <Subheading>A Warrior has been found</Subheading>
+      <Subheading>Warrior found</Subheading>
       <Battle>
         <Info>
           <Profile>CC</Profile>
@@ -44,14 +89,15 @@ export default function Matched(props) {
 
         <Info>
           <Profile>SP</Profile>
-          <Name>{JSON.parse(props.opponent).name}</Name>
+          <Name>{opponent && opponent.name}</Name>
         </Info>
       </Battle>
-      {startCountDown && (
+      {/* {startCountDown && (
         <h1>{timeLeft === 10 ? `00:${timeLeft}` : `00:0${timeLeft}`}</h1>
-      )}
+      )} */}
       <ReadyButton
-        onClick={() => setStartCountDown(true)}
+        // onClick={() => setStartCountDown(true)}
+        onClick={RedirectToEditor}
         className="primary-btn flex-center marginS"
         type="submit"
       >

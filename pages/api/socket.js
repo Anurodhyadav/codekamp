@@ -17,7 +17,11 @@ const SocketHandler = (req, res) => {
         })
         socket.on('user-online', user => {
             socket.broadcast.emit('broadcast-user', user);
-        } )
+        })
+        
+      socket.on('match-found', matchedDetails => {
+        socket.broadcast.emit('set-match', matchedDetails);
+        })
     })
   }
   res.end()

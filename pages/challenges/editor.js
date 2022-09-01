@@ -18,6 +18,7 @@ const Editor = () => {
   const [output, setOutput] = useState();
   const router = useRouter();
   const [partnerWon, setpartnerWon] = useState(false);
+  const { opponentName, currentUser } = router.query;
 
   const cipher = new ShiftCipher();
 
@@ -30,16 +31,16 @@ const Editor = () => {
     socket = io();
 
     socket.on("update-input", (msg) => {
-      if (msg.user === localStorage.getItem("nickname")) {
+      if (msg.user === currentUser) {
         setCode(msg.code);
       }
-      if (msg.user !== localStorage.getItem("nickname")) {
+      if (msg.user === opponentName) {
         setpartnerCode(msg.code);
       }
     });
 
     socket.on("user-submit-code", (code_submition) => {
-      if (code_submition.coder !== localStorage.getItem("nickname")) {
+      if (code_submition.coder === opponentName) {
         setpartnerWon(true);
       }
     });
@@ -76,7 +77,7 @@ const Editor = () => {
         setAPIResponse(data);
         setOutput(data.actualOutput);
         const code_submition = {
-          coder: localStorage.getItem("nickname"),
+          coder: currentUser,
           code_submitted: true,
         };
 
@@ -89,7 +90,7 @@ const Editor = () => {
   const handleKeyUp = (e) => {
     setCode(e.target.value);
     const emit_value = {
-      user: localStorage.getItem("nickname"),
+      user: currentUser,
       code: e.target.value,
     };
     socket.emit("input-change", emit_value);
@@ -121,7 +122,7 @@ const Editor = () => {
           </ProblemDescription>
         </ProblemStatement>
         <Opponent>
-          <OpponentName>Opponent Name: {router.query.name}</OpponentName>
+          <OpponentName>Opponent Name: {opponentName}</OpponentName>
           <OpponentInfo></OpponentInfo>
           <OppoInputScreen
             value={partnerCode?.length && encrypt(partnerCode)}
