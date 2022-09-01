@@ -1,19 +1,28 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
+import{ useRouter } from "next/router";
 
 export default function LookingForAMatch() {
   const [nickname, setNickname] = useState();
+  const router = useRouter();
   useEffect(() => {
-    setNickname(
-      JSON.parse(localStorage.getItem("nickname"))
-        .name.substring(0, 2)
-        .toUpperCase()
-    );
+    const getLocalNickname = localStorage.getItem("nickname");
+    if (getLocalNickname) {
+      setNickname(
+        JSON.parse(localStorage.getItem("nickname"))
+          .name.substring(0, 2)
+          .toUpperCase()
+      );
+    } else {
+      console.log("REDIRECT");
+      router.push("/")
+    }
+    
   }, []);
 
   return (
     <Container>
-      <Subheading>Looking for a warrior....</Subheading>
+      <Subheading>Looking for a warrior...</Subheading>
       <Profile>{nickname}</Profile>
       <Circle1></Circle1>
       <Circle2></Circle2>
