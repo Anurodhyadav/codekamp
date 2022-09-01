@@ -13,7 +13,7 @@ export default function LookingForAMatch() {
 
   return (
     <Container>
-      <Subheading>Looking for a warrior...</Subheading>
+      <Subheading>Looking for a warrior....</Subheading>
       <Profile>{nickname}</Profile>
       <Circle1></Circle1>
       <Circle2></Circle2>
