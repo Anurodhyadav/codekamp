@@ -22,6 +22,7 @@ label {
     width: 424px;
     height: 54px;
     background: var(--lightPurple);
+    border: 1px solid var(--lightPurple);
     border-radius: 5px;
     color: var(--dark);
     font-weight: 700;
@@ -32,6 +33,23 @@ label {
 .primary-btn:hover {
     background: var(--darkPurple);
     color: var(--lightPurple);
+}
+
+.secondary-btn {
+    width: 424px;
+    height: 54px;
+    background: var(--dark);
+    border: 1px solid var(--lightPurple);
+    border-radius: 5px;
+    color: var(--lightPurple);
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.secondary-btn:hover {
+    color: var(--dark);
+    background: var(--lightPurple);
 }
 
 .flex-center {
