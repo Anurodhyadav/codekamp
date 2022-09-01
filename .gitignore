@@ -1,5 +1,3 @@
 .env
-.next/cache
-.next/server
-.next/static
+.next/
 node_modules/
