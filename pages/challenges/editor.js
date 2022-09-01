@@ -171,6 +171,7 @@ const Title = styled.h1`
 `;
 
 const EditorContainer = styled.div`
+  position:relative;
   width: 100%;
   display: flex;
   background-color: var(--dark);

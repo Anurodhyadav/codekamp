@@ -3,71 +3,79 @@ import Image from "next/image";
 
 const Winner = () => {
   return (
-    <WinnerContainer>
-      <Image src={"/asset/congratulations.svg"} height={280} width={250} />
-      <Points>+200 Points</Points>
-      <h1>CONGRATULATIONS</h1>
-      <p>
-        You emerged victorious. You may now battle more warriors and conquer the
-        the world of coding.
-      </p>
-      <ButtonContainer>
-        <button className="primary-btn">Spectate your opponent</button>
-        <Button onClick={() => router.push("/matchpage")}>
+    <ContainerFilter>
+      <WinnerContainer>
+        <WinnerImageContainer>
+          <Image src={"/asset/congratulations.svg"} height={200} width={200} />
+        </WinnerImageContainer>
+        <Points>+200 Points</Points>
+        <h1>CONGRATULATIONS</h1>
+        <p>
+          You emerged victorious. You may now battle more warriors and conquer the
+          the world of coding.
+        </p>
+        <ButtonContainer>
+          <button className="primary-btn">Find a new warrior</button>
+          {/* <Button onClick={() => router.push("/matchpage")}>
           Search for a new warrior
-        </Button>
-      </ButtonContainer>
-      <CloseBtn>X</CloseBtn>
-    </WinnerContainer>
+        </Button> */}
+        </ButtonContainer>
+
+        <CloseContainer>
+          <Image src={"/asset/close.svg"} height={24} width={24} />
+        </CloseContainer>
+      </WinnerContainer>
+    </ContainerFilter>
   );
 };
 
 export default Winner;
 
+const ContainerFilter = styled.div`
+  position:absolute;
+  height:100vh;
+  width:100%;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 10;
+  `;
+
 const WinnerContainer = styled.div`
   display: flex;
   position: absolute;
-  top: 12%;
-  left: 15%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 10;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   background: #121212;
   border-radius: 8px;
-  padding: 0 10px;
   box-shadow: 0px 10px 20px rgb(0 0 0 / 50%);
-  width: 70%;
-  height: 85%;
+  width:75%;
+  padding:var(--spacingM); 
+  text-align:center;
 `;
 const Points = styled.text`
   color: #7ef535;
-  margin-top: 20px;
+  margin-top: var(--spacingXS);
 `;
 
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
+  margin-top: var(--spacingS);
 `;
 
-const Button = styled.button`
-  width: 424px;
-  height: 53px;
-  border: 2px solid #ccccff;
-  border-radius: 5px;
-  background-color: var(--dark);
-  margin-left: 20px;
-`;
+const WinnerImageContainer = styled.div`
+  `;
 
-const CloseBtn = styled.button`
+const CloseContainer = styled.div`
   position: absolute;
-  right: 20px;
-  top: 20px;
-  border: none;
-  padding: 4px;
-  margin: 0;
-  background: transparent;
-  cursor: pointer;
-  font-size: 30px;
-  font-weight: 600;
+  top:20px;
+  right:20px;
+  cursor:pointer;
+  &:hover{
+    transform:scale(1.2);
+  }
 `;
