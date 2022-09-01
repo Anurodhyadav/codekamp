@@ -2,7 +2,7 @@ import styled from "styled-components";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
-const Loser = () => {
+const Loser = ({ closeHandler }) => {
   const router = useRouter();
   return (
     <ContainerFilter>
@@ -32,7 +32,6 @@ const Loser = () => {
         </CloseContainer>
       </LoserContainer>
     </ContainerFilter>
-
   );
 };
 

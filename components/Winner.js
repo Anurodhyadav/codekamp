@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import Image from "next/image";
 
-const Winner = () => {
+const Winner = ({ closeHandler }) => {
   return (
     <ContainerFilter>
       <WinnerContainer>
