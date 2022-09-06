@@ -1,7 +1,9 @@
 import styled from "styled-components";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 const Winner = () => {
+  const router = useRouter();
   return (
     <ContainerFilter>
       <WinnerContainer>
@@ -22,10 +24,6 @@ const Winner = () => {
             Find a new warrior
           </button>
         </ButtonContainer>
-
-        <CloseContainer>
-          <Image src={"/asset/close.svg"} height={24} width={24} />
-        </CloseContainer>
       </WinnerContainer>
     </ContainerFilter>
   );
@@ -58,7 +56,7 @@ const WinnerContainer = styled.div`
   padding: var(--spacingM);
   text-align: center;
 `;
-const Points = styled.text`
+const Points = styled.p`
   color: #7ef535;
   margin-top: var(--spacingXS);
 `;
@@ -70,13 +68,3 @@ const ButtonContainer = styled.div`
 `;
 
 const WinnerImageContainer = styled.div``;
-
-const CloseContainer = styled.div`
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  cursor: pointer;
-  &:hover {
-    transform: scale(1.2);
-  }
-`;

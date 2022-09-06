@@ -6,6 +6,7 @@ import challenges from "./challenges.json";
 import { useRouter } from "next/router";
 import Loser from "../../components/loser";
 import Winner from "../../components/Winner";
+import Image from "next/image";
 
 let socket;
 
@@ -15,8 +16,8 @@ const Editor = () => {
   const [i, setI] = useState(2);
   const [apiResponse, setAPIResponse] = useState();
   const [count, setCount] = useState([1, 2]);
-  const [tests, setTests] = useState();
   const [testCase, setTestcase] = useState(0);
+  const [testPassed, setTestPassed] = useState([]);
   const [codeRan, setCodeRan] = useState(false);
   const router = useRouter();
   const [partnerWon, setpartnerWon] = useState(false);
@@ -61,6 +62,7 @@ const Editor = () => {
   );
 
   const runCode = () => {
+    setTestPassed([]);
     fetch("https://api.programiz.pro/api/Challenge/run", {
       method: "POST",
       body: JSON.stringify({
@@ -77,7 +79,6 @@ const Editor = () => {
       .then((json) => {
         const data = json.data;
         setAPIResponse(data);
-        setTests(data.tests);
         setCodeRan(true);
 
         const code_submition = {
@@ -111,9 +112,17 @@ const Editor = () => {
     setTestcase(id);
   };
 
+  const handleTestCases = () => {
+    apiResponse &&
+      apiResponse.tests.map((test, id) => {
+        return test.testPassed && testPassed.push(id);
+      });
+  };
+
   return (
     <EditorContainer>
       {apiResponse && apiResponse.allAvailableTestsPassed && <Winner></Winner>}
+      {apiResponse && apiResponse.tests && handleTestCases()}
       {partnerWon && (
         <Loser opponentCode={partnerCode} title={challenge[0].title}></Loser>
       )}
@@ -172,29 +181,65 @@ const Editor = () => {
                   active={testCase === 0}
                   onClick={() => handleTabChange(0)}
                 >
+                  <Image
+                    src={
+                      testPassed.includes(0)
+                        ? "/asset/correct.svg"
+                        : "/asset/incorrect.svg"
+                    }
+                    width={10}
+                    height={10}
+                  />
                   <TestTitle>Test Case 1</TestTitle>
                 </TabElement>
                 <TabElement
                   active={testCase === 1}
                   onClick={() => handleTabChange(1)}
                 >
+                  <Image
+                    src={
+                      testPassed.includes(1)
+                        ? "/asset/correct.svg"
+                        : "/asset/incorrect.svg"
+                    }
+                    width={10}
+                    height={10}
+                  />
                   <TestTitle>Test Case 2</TestTitle>
                 </TabElement>
                 <TabElement
                   active={testCase === 2}
                   onClick={() => handleTabChange(2)}
                 >
+                  <Image
+                    src={
+                      testPassed.includes(2)
+                        ? "/asset/correct.svg"
+                        : "/asset/incorrect.svg"
+                    }
+                    width={10}
+                    height={10}
+                  />
                   <TestTitle>Test Case 3</TestTitle>
                 </TabElement>
                 <TabElement
                   active={testCase === 3}
                   onClick={() => handleTabChange(3)}
                 >
+                  <Image
+                    src={
+                      testPassed.includes(3)
+                        ? "/asset/correct.svg"
+                        : "/asset/incorrect.svg"
+                    }
+                    width={10}
+                    height={10}
+                  />
                   <TestTitle>Test Case 4</TestTitle>
                 </TabElement>
               </Tab>
               <Output>
-                {tests.map((test, id) => {
+                {apiResponse.tests.map((test, id) => {
                   return (
                     testCase === id && (
                       <TestCases key={id}>
@@ -334,7 +379,7 @@ const FileName = styled.div`
   font-size: 12px;
   font-weight: 200;
   margin-left: 30px;
-  color: gray;
+  color: white;
   border: 2px solid gray;
   p {
     text-align: center;
@@ -374,7 +419,7 @@ const OutputScreen = styled.div`
   height: 35vh;
   background: var(--dark);
   color: white;
-  align-self: end;
+  align-self: flex-end;
 `;
 
 const Output = styled.div`
@@ -400,6 +445,8 @@ const Run = styled.button`
   width: 85px;
   height: 30px;
   border: none;
+  font-weight: 500;
+  text-align: center;
   border-radius: 3px;
   cursor: pointer;
   &:hover {
