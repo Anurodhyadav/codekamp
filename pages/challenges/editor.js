@@ -15,7 +15,9 @@ const Editor = () => {
   const [i, setI] = useState(2);
   const [apiResponse, setAPIResponse] = useState();
   const [count, setCount] = useState([1, 2]);
-  const [output, setOutput] = useState();
+  const [tests, setTests] = useState();
+  const [testCase, setTestcase] = useState(0);
+  const [codeRan, setCodeRan] = useState(false);
   const router = useRouter();
   const [partnerWon, setpartnerWon] = useState(false);
   const { opponentName, currentUser } = router.query;
@@ -75,7 +77,9 @@ const Editor = () => {
       .then((json) => {
         const data = json.data;
         setAPIResponse(data);
-        setOutput(data.actualOutput);
+        setTests(data.tests);
+        setCodeRan(true);
+
         const code_submition = {
           coder: currentUser,
           code_submitted: true,
@@ -101,6 +105,10 @@ const Editor = () => {
       setI(i + 1);
       i > 2 && count.push(i);
     }
+  };
+
+  const handleTabChange = (id) => {
+    setTestcase(id);
   };
 
   return (
@@ -155,10 +163,59 @@ const Editor = () => {
             </FlexRow>
           </IDE>
         </Input>
-
         <OutputScreen>
           <OutputHeader>Output</OutputHeader>
-          <Output>{output}</Output>
+          {codeRan && apiResponse && !apiResponse.error ? (
+            <>
+              <Tab>
+                <TabElement
+                  active={testCase === 0}
+                  onClick={() => handleTabChange(0)}
+                >
+                  <TestTitle>Test Case 1</TestTitle>
+                </TabElement>
+                <TabElement
+                  active={testCase === 1}
+                  onClick={() => handleTabChange(1)}
+                >
+                  <TestTitle>Test Case 2</TestTitle>
+                </TabElement>
+                <TabElement
+                  active={testCase === 2}
+                  onClick={() => handleTabChange(2)}
+                >
+                  <TestTitle>Test Case 3</TestTitle>
+                </TabElement>
+                <TabElement
+                  active={testCase === 3}
+                  onClick={() => handleTabChange(3)}
+                >
+                  <TestTitle>Test Case 4</TestTitle>
+                </TabElement>
+              </Tab>
+              <Output>
+                {tests.map((test, id) => {
+                  return (
+                    testCase === id && (
+                      <TestCases key={id}>
+                        <TestCase>
+                          <h4>Input</h4> <div>{test.input}</div>{" "}
+                        </TestCase>
+                        <TestCase>
+                          <h4>Your Output</h4> <div>{test.actualOutput}</div>
+                        </TestCase>
+                        <TestCase>
+                          <h4>Output</h4> <div>{test.output}</div>
+                        </TestCase>
+                      </TestCases>
+                    )
+                  );
+                })}
+              </Output>
+            </>
+          ) : (
+            <Error>{apiResponse && apiResponse.error}</Error>
+          )}
         </OutputScreen>
       </UserEditor>
     </EditorContainer>
@@ -250,7 +307,7 @@ const IDE = styled.div``;
 
 const Lines = styled.div`
   width: 30px;
-  height: 70vh;
+  height: 65vh;
   list-style: none;
   color: var(--lightPurple);
   padding-top: 1%;
@@ -290,7 +347,7 @@ const InputScreen = styled.textarea`
   padding-bottom: 5%;
   background: var(--dark);
   width: calc(100% - 30px);
-  height: 70vh;
+  height: 65vh;
   color: var(--lightPurple);
   line-height: 135%;
   font-size: 14px;
@@ -314,13 +371,16 @@ const Tasks = styled.ul`
 
 const OutputScreen = styled.div`
   width: calc(100% - 30px);
-  height: 30vh;
+  height: 35vh;
   background: var(--dark);
   color: white;
   align-self: end;
 `;
 
-const Output = styled.div``;
+const Output = styled.div`
+  padding: 15px;
+  color: ${(props) => (props.isError ? "red" : "white")};
+`;
 
 const OutputHeader = styled.div`
   background: #000000;
@@ -346,4 +406,52 @@ const Run = styled.button`
     background: var(--lightPurple);
     color: var(--dark);
   }
+`;
+
+const Tab = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  padding: 10px;
+`;
+
+const TabElement = styled.span`
+  display: flex;
+  color: ${(props) => (props.active ? "#ccccff" : "white")};
+  border-bottom: ${(props) =>
+    props.active ? "3px solid #ccccff" : "3px solid white"};
+  width: 30%;
+  font-weight: bold;
+  cursor: pointer;
+`;
+
+const TestCases = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+const TestCase = styled.div`
+  display: flex;
+  flex-direction: column;
+  border: 2px solid gray;
+  border-radius: 4px;
+  background: black;
+  color: var(--lightPurple);
+  width: 30%;
+  text-align: left;
+  padding-left: 10px;
+  padding-bottom: 15px;
+  line-height: 50%;
+`;
+
+const Error = styled.div`
+  color: red;
+  padding: 3%;
+`;
+
+const TestTitle = styled.div`
+  margin-left: 5px;
 `;
