@@ -3,10 +3,14 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 
 const Winner = () => {
-  const router = useRouter();
+
+  const router = useRouter()
+
   return (
+
     <ContainerFilter>
       <WinnerContainer>
+        <Confetti className="bg-confetti-animated">
         <WinnerImageContainer>
           <Image src={"/asset/congratulations.svg"} height={200} width={200} />
         </WinnerImageContainer>
@@ -24,6 +28,7 @@ const Winner = () => {
             Find a new warrior
           </button>
         </ButtonContainer>
+        </Confetti>
       </WinnerContainer>
     </ContainerFilter>
   );
@@ -32,12 +37,12 @@ const Winner = () => {
 export default Winner;
 
 const ContainerFilter = styled.div`
-  position: absolute;
-  height: 100vh;
-  width: 100%;
+  position:absolute;
+  height:100vh;
+  width:100%;
   background: rgba(0, 0, 0, 0.9);
   z-index: 10;
-`;
+  `;
 
 const WinnerContainer = styled.div`
   display: flex;
@@ -52,9 +57,9 @@ const WinnerContainer = styled.div`
   background: #121212;
   border-radius: 8px;
   box-shadow: 0px 10px 20px rgb(0 0 0 / 50%);
-  width: 75%;
-  padding: var(--spacingM);
-  text-align: center;
+  width:75%;
+  padding:var(--spacingM); 
+  text-align:center;
 `;
 const Points = styled.p`
   color: #7ef535;
@@ -67,4 +72,11 @@ const ButtonContainer = styled.div`
   margin-top: var(--spacingS);
 `;
 
-const WinnerImageContainer = styled.div``;
+const Confetti = styled.div`
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+`;
+
