@@ -7,23 +7,25 @@ import { useRouter } from "next/router";
 import Loser from "../../components/loser";
 import Winner from "../../components/Winner";
 import Image from "next/image";
+import Loader from "../../components/loader";
 
 let socket;
 
 const Editor = () => {
   const [code, setCode] = useState();
   const [partnerCode, setpartnerCode] = useState();
+  const [isLoading, setIsLoading] = useState(false);
   const [i, setI] = useState(2);
   const [apiResponse, setAPIResponse] = useState();
   const [count, setCount] = useState([1, 2]);
   const [testCase, setTestcase] = useState(0);
-  const [testPassed, setTestPassed] = useState([]);
-  const [codeRan, setCodeRan] = useState(false);
   const router = useRouter();
   const [partnerWon, setpartnerWon] = useState(false);
   const { opponentName, currentUser } = router.query;
 
   const cipher = new ShiftCipher();
+
+  let testPassed = [];
 
   useEffect(() => {
     socketInitializer();
@@ -62,7 +64,8 @@ const Editor = () => {
   );
 
   const runCode = () => {
-    setTestPassed([]);
+    setIsLoading(true);
+    testPassed = [];
     fetch("https://api.programiz.pro/api/Challenge/run", {
       method: "POST",
       body: JSON.stringify({
@@ -79,8 +82,7 @@ const Editor = () => {
       .then((json) => {
         const data = json.data;
         setAPIResponse(data);
-        setCodeRan(true);
-
+        setIsLoading(false);
         const code_submition = {
           coder: currentUser,
           code_submitted: true,
@@ -121,6 +123,7 @@ const Editor = () => {
 
   return (
     <EditorContainer>
+      {isLoading && <Loader />}
       {apiResponse && apiResponse.allAvailableTestsPassed && <Winner></Winner>}
       {apiResponse && apiResponse.tests && handleTestCases()}
       {partnerWon && (
@@ -174,7 +177,7 @@ const Editor = () => {
         </Input>
         <OutputScreen>
           <OutputHeader>Output</OutputHeader>
-          {codeRan && apiResponse && !apiResponse.error ? (
+          {apiResponse && !apiResponse.error ? (
             <>
               <Tab>
                 <TabElement
@@ -250,7 +253,7 @@ const Editor = () => {
                           <h4>Your Output</h4> <div>{test.actualOutput}</div>
                         </TestCase>
                         <TestCase>
-                          <h4>Output</h4> <div>{test.output}</div>
+                          <h4>Expected Output</h4> <div>{test.output}</div>
                         </TestCase>
                       </TestCases>
                     )
