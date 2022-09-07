@@ -44,9 +44,6 @@ const Loser = ({ opponentCode, title }) => {
             </button>
           )}
         </ButtonContainer>
-        <CloseContainer>
-          <Image src={"/asset/close.svg"} height={24} width={24} />
-        </CloseContainer>
       </LoserContainer>
     </ContainerFilter>
   );
@@ -79,7 +76,7 @@ const LoserContainer = styled.div`
   padding: var(--spacingM);
   text-align: center;
 `;
-const Points = styled.text`
+const Points = styled.p`
   color: #7ef535;
   margin-top: 20px;
 `;
@@ -88,15 +85,6 @@ const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: var(--spacingS);
-`;
-const CloseContainer = styled.div`
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  cursor: pointer;
-  &:hover {
-    transform: scale(1.2);
-  }
 `;
 
 const Text = styled.p`

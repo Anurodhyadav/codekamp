@@ -6,6 +6,7 @@ import challenges from "./challenges.json";
 import { useRouter } from "next/router";
 import Loser from "../../components/loser";
 import Winner from "../../components/Winner";
+import Image from "next/image";
 
 let socket;
 
@@ -15,7 +16,9 @@ const Editor = () => {
   const [i, setI] = useState(2);
   const [apiResponse, setAPIResponse] = useState();
   const [count, setCount] = useState([1, 2]);
-  const [output, setOutput] = useState();
+  const [testCase, setTestcase] = useState(0);
+  const [testPassed, setTestPassed] = useState([]);
+  const [codeRan, setCodeRan] = useState(false);
   const router = useRouter();
   const [partnerWon, setpartnerWon] = useState(false);
   const { opponentName, currentUser } = router.query;
@@ -59,6 +62,7 @@ const Editor = () => {
   );
 
   const runCode = () => {
+    setTestPassed([]);
     fetch("https://api.programiz.pro/api/Challenge/run", {
       method: "POST",
       body: JSON.stringify({
@@ -75,7 +79,8 @@ const Editor = () => {
       .then((json) => {
         const data = json.data;
         setAPIResponse(data);
-        setOutput(data.actualOutput);
+        setCodeRan(true);
+
         const code_submition = {
           coder: currentUser,
           code_submitted: true,
@@ -103,9 +108,21 @@ const Editor = () => {
     }
   };
 
+  const handleTabChange = (id) => {
+    setTestcase(id);
+  };
+
+  const handleTestCases = () => {
+    apiResponse &&
+      apiResponse.tests.map((test, id) => {
+        return test.testPassed && testPassed.push(id);
+      });
+  };
+
   return (
     <EditorContainer>
       {apiResponse && apiResponse.allAvailableTestsPassed && <Winner></Winner>}
+      {apiResponse && apiResponse.tests && handleTestCases()}
       {partnerWon && (
         <Loser opponentCode={partnerCode} title={challenge[0].title}></Loser>
       )}
@@ -155,10 +172,95 @@ const Editor = () => {
             </FlexRow>
           </IDE>
         </Input>
-
         <OutputScreen>
           <OutputHeader>Output</OutputHeader>
-          <Output>{output}</Output>
+          {codeRan && apiResponse && !apiResponse.error ? (
+            <>
+              <Tab>
+                <TabElement
+                  active={testCase === 0}
+                  onClick={() => handleTabChange(0)}
+                >
+                  <Image
+                    src={
+                      testPassed.includes(0)
+                        ? "/asset/correct.svg"
+                        : "/asset/incorrect.svg"
+                    }
+                    width={10}
+                    height={10}
+                  />
+                  <TestTitle>Test Case 1</TestTitle>
+                </TabElement>
+                <TabElement
+                  active={testCase === 1}
+                  onClick={() => handleTabChange(1)}
+                >
+                  <Image
+                    src={
+                      testPassed.includes(1)
+                        ? "/asset/correct.svg"
+                        : "/asset/incorrect.svg"
+                    }
+                    width={10}
+                    height={10}
+                  />
+                  <TestTitle>Test Case 2</TestTitle>
+                </TabElement>
+                <TabElement
+                  active={testCase === 2}
+                  onClick={() => handleTabChange(2)}
+                >
+                  <Image
+                    src={
+                      testPassed.includes(2)
+                        ? "/asset/correct.svg"
+                        : "/asset/incorrect.svg"
+                    }
+                    width={10}
+                    height={10}
+                  />
+                  <TestTitle>Test Case 3</TestTitle>
+                </TabElement>
+                <TabElement
+                  active={testCase === 3}
+                  onClick={() => handleTabChange(3)}
+                >
+                  <Image
+                    src={
+                      testPassed.includes(3)
+                        ? "/asset/correct.svg"
+                        : "/asset/incorrect.svg"
+                    }
+                    width={10}
+                    height={10}
+                  />
+                  <TestTitle>Test Case 4</TestTitle>
+                </TabElement>
+              </Tab>
+              <Output>
+                {apiResponse.tests.map((test, id) => {
+                  return (
+                    testCase === id && (
+                      <TestCases key={id}>
+                        <TestCase>
+                          <h4>Input</h4> <div>{test.input}</div>{" "}
+                        </TestCase>
+                        <TestCase>
+                          <h4>Your Output</h4> <div>{test.actualOutput}</div>
+                        </TestCase>
+                        <TestCase>
+                          <h4>Output</h4> <div>{test.output}</div>
+                        </TestCase>
+                      </TestCases>
+                    )
+                  );
+                })}
+              </Output>
+            </>
+          ) : (
+            <Error>{apiResponse && apiResponse.error}</Error>
+          )}
         </OutputScreen>
       </UserEditor>
     </EditorContainer>
@@ -250,7 +352,7 @@ const IDE = styled.div``;
 
 const Lines = styled.div`
   width: 30px;
-  height: 70vh;
+  height: 65vh;
   list-style: none;
   color: var(--lightPurple);
   padding-top: 1%;
@@ -277,7 +379,7 @@ const FileName = styled.div`
   font-size: 12px;
   font-weight: 200;
   margin-left: 30px;
-  color: gray;
+  color: white;
   border: 2px solid gray;
   p {
     text-align: center;
@@ -290,7 +392,7 @@ const InputScreen = styled.textarea`
   padding-bottom: 5%;
   background: var(--dark);
   width: calc(100% - 30px);
-  height: 70vh;
+  height: 65vh;
   color: var(--lightPurple);
   line-height: 135%;
   font-size: 14px;
@@ -314,13 +416,16 @@ const Tasks = styled.ul`
 
 const OutputScreen = styled.div`
   width: calc(100% - 30px);
-  height: 30vh;
+  height: 35vh;
   background: var(--dark);
   color: white;
-  align-self: end;
+  align-self: flex-end;
 `;
 
-const Output = styled.div``;
+const Output = styled.div`
+  padding: 15px;
+  color: ${(props) => (props.isError ? "red" : "white")};
+`;
 
 const OutputHeader = styled.div`
   background: #000000;
@@ -340,10 +445,60 @@ const Run = styled.button`
   width: 85px;
   height: 30px;
   border: none;
+  font-weight: 500;
+  text-align: center;
   border-radius: 3px;
   cursor: pointer;
   &:hover {
     background: var(--lightPurple);
     color: var(--dark);
   }
+`;
+
+const Tab = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  padding: 10px;
+`;
+
+const TabElement = styled.span`
+  display: flex;
+  color: ${(props) => (props.active ? "#ccccff" : "white")};
+  border-bottom: ${(props) =>
+    props.active ? "3px solid #ccccff" : "3px solid white"};
+  width: 30%;
+  font-weight: bold;
+  cursor: pointer;
+`;
+
+const TestCases = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+const TestCase = styled.div`
+  display: flex;
+  flex-direction: column;
+  border: 2px solid gray;
+  border-radius: 4px;
+  background: black;
+  color: var(--lightPurple);
+  width: 30%;
+  text-align: left;
+  padding-left: 10px;
+  padding-bottom: 15px;
+  line-height: 50%;
+`;
+
+const Error = styled.div`
+  color: red;
+  padding: 3%;
+`;
+
+const TestTitle = styled.div`
+  margin-left: 5px;
 `;
