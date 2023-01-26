@@ -2,16 +2,16 @@ import { io } from "socket.io-client";
 import { useState, useEffect } from "react";
 import LookingForAMatch from "../components/lookingForAMatch";
 import Matched from "../components/matched";
-import { useRouter } from 'next/router'
+import { useRouter } from "next/router";
 
 let socket;
 
 export default function MatchPage() {
   const [matched, setMatched] = useState(false);
   const [opponent, setopponentName] = useState("");
-  const router = useRouter()
-  const [currentUser, setCurrentUser] = useState("")
-
+  const router = useRouter();
+  const [currentUser, setCurrentUser] = useState("");
+  const [readyStateInfoForUser, setReadyStateInfoForUser] = useState({});
 
   const socketInitializer = async () => {
     await fetch("api/socket");
@@ -21,8 +21,8 @@ export default function MatchPage() {
       console.log("connection established");
     });
 
-    socket.on('set-match', (matchedDetails) => {
-      const currentUserInfo = JSON.parse(localStorage.getItem('nickname'))
+    socket.on("set-match", (matchedDetails) => {
+      const currentUserInfo = JSON.parse(localStorage.getItem("nickname"));
       if (matchedDetails.user === currentUserInfo.name) {
         setMatched(true);
         if (!opponent) {
@@ -30,36 +30,38 @@ export default function MatchPage() {
         }
         clearInterval(timer);
       }
-     
-    })
+    });
+
+    socket.on("set-ready-state", (readyStateForUser) => {
+      setReadyStateInfoForUser(readyStateForUser);
+    });
 
     socket.on("broadcast-user", (user) => {
       if (user !== localStorage.getItem("nickname")) {
         setMatched(true);
         setopponentName(user);
         clearInterval(timer);
-        const userInfo = JSON.parse(user)
+        const userInfo = JSON.parse(user);
         const userName = userInfo.name;
         const matchedDetails = {
           user: userName,
           login_user: localStorage.getItem("nickname"),
-          matched_done: true
-        }
-        socket.emit("match-found",matchedDetails );
+          matched_done: true,
+        };
+        socket.emit("match-found", matchedDetails);
       }
     });
     var timer = setInterval(() => {
-      console.log('matched value', matched)
       socket.emit("user-online", localStorage.getItem("nickname"));
-    },1000)
+    }, 1000);
   };
 
   useEffect(() => {
-    const localUser = JSON.parse(localStorage.getItem('nickname'))?.name;
+    const localUser = JSON.parse(localStorage.getItem("nickname"))?.name;
     if (!localUser) {
-      router.push("/")
+      router.push("/");
     }
-    setCurrentUser(localUser)
+    setCurrentUser(localUser);
     socketInitializer();
 
     // return () => clearInterval(timer)
@@ -69,20 +71,25 @@ export default function MatchPage() {
     const exitingFunction = () => {
       localStorage.clear();
     };
-  
-    router.events.on('routeChangeStart', exitingFunction );
+
+    router.events.on("routeChangeStart", exitingFunction);
 
     return () => {
-        router.events.off('routeChangeStart', exitingFunction);
+      router.events.off("routeChangeStart", exitingFunction);
     };
-}, []);
+  }, []);
   return (
     <>
       {!matched ? (
         <LookingForAMatch></LookingForAMatch>
       ) : (
         <>
-          <Matched currentUser = {currentUser}  opponent={opponent}></Matched>
+          <Matched
+            socket={socket}
+            currentUser={currentUser}
+            opponent={opponent}
+            readyStateInfoForUser={readyStateInfoForUser}
+          ></Matched>
         </>
       )}
     </>

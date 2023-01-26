@@ -5,70 +5,56 @@ import { useRouter } from "next/router";
 
 export default function Matched(props) {
   let i;
-  // const [timeLeft, setTimeLeft] = useState(10);
-  // const [startCountDown, setStartCountDown] = useState(false);
+
   const [opponent, setOpponent] = useState({});
   const [currentUser, setCurrentUser] = useState("");
+  const [loadingState, setLoadingState] = useState(false);
+
+  const socket = props.socket;
+  const readyStateInfoForUser = props.readyStateInfoForUser;
 
   const router = useRouter();
-
-  // const countDown =
-  //   startCountDown &&
-  //   setInterval(() => {
-  //     i = timeLeft - 1;
-  //     setTimeLeft(i);
-  //   }, 1000);
 
   useEffect(() => {
     const opponent_data = JSON.parse(props.opponent);
     setOpponent(opponent_data);
     const current_user = props.currentUser;
     setCurrentUser(current_user);
-
-    // setInterval(() => {
-    //   setTimeLeft(timeLeft -1 )
-    // }, 1000)
-
-    // const startCounter = () => {
-    //   setTimeLeft((timeLeft) => timeLeft - 1);
-    //   if (timeLeft < 1) {
-    //      console.log("happended")
-    //   router.push({
-    //     pathname: "/challenges/editor",
-    //     query: {
-    //       opponent: opponent,
-    //       currentUser: currentUser
-    //     },
-    //   });
-    // }
-    // }
-
-    // setInterval(startCounter, 1000);
-
-    // if (timeLeft < 1) {
-    //   clearInterval(countDown);
-    //   router.push({
-    //     pathname: "/challenges/editor",
-    //     query: {
-    //       opponent: opponent,
-    //       currentUser: currentUser
-    //     },
-    //   });
-    // }
-    // return () => {
-    //   clearInterval(startCounter);
-    // }
   }, []);
-  console.log("The current user", currentUser);
+
+  useEffect(() => {
+    const { name, ready_state } = readyStateInfoForUser;
+
+    if (name === opponent?.name && ready_state && loadingState) {
+      router.push({
+        pathname: "/challenges/editor",
+        query: {
+          opponentName: opponent?.name,
+          currentUser: currentUser,
+        },
+      });
+    }
+  }, [readyStateInfoForUser]);
 
   const RedirectToEditor = () => {
-    router.push({
-      pathname: "/challenges/editor",
-      query: {
-        opponentName: opponent.name,
-        currentUser: currentUser,
-      },
-    });
+    const readyStateForUser = {
+      name: currentUser,
+      opponent: opponent?.name,
+      ready_state: true,
+    };
+    setLoadingState(true);
+
+    socket.emit("ready-state", readyStateForUser);
+    const { name, ready_state } = readyStateInfoForUser;
+    if (name === opponent?.name && ready_state) {
+      router.push({
+        pathname: "/challenges/editor",
+        query: {
+          opponentName: opponent?.name,
+          currentUser: currentUser,
+        },
+      });
+    }
   };
 
   return (
@@ -76,8 +62,10 @@ export default function Matched(props) {
       <Subheading>Warrior found</Subheading>
       <Battle>
         <Info>
-          <Profile>{currentUser ? currentUser.substring(0, 2) : "CC"}</Profile>
-          <Name>{JSON.parse(localStorage.getItem("nickname")).name}</Name>
+          <Profile>
+            {currentUser ? currentUser.substring(0, 2).toUpperCase() : "CC"}
+          </Profile>
+          <Name>{JSON.parse(localStorage.getItem("nickname"))?.name}</Name>
         </Info>
 
         <ImageContainer>
@@ -86,21 +74,20 @@ export default function Matched(props) {
 
         <Info>
           <Profile>
-            {opponent?.name ? opponent?.name?.substring(0, 2) : "PP"}
+            {opponent?.name
+              ? opponent?.name?.substring(0, 2).toUpperCase()
+              : "PP"}
           </Profile>
           <Name>{opponent && opponent.name}</Name>
         </Info>
       </Battle>
-      {/* {startCountDown && (
-        <h1>{timeLeft === 10 ? `00:${timeLeft}` : `00:0${timeLeft}`}</h1>
-      )} */}
       <ReadyButton
-        // onClick={() => setStartCountDown(true)}
+        disabled={loadingState}
         onClick={RedirectToEditor}
-        className="primary-btn flex-center marginS"
+        className={`${loadingState ? "" : "primary-btn"} flex-center marginS`}
         type="submit"
       >
-        Ready for the battle
+        {loadingState ? "Waiting for your opponent..." : "Ready for the battle"}
       </ReadyButton>
     </Container>
   );
