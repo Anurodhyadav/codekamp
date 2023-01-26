@@ -7,8 +7,8 @@ export default function Matched(props) {
   let i;
   // const [timeLeft, setTimeLeft] = useState(10);
   // const [startCountDown, setStartCountDown] = useState(false);
-  const [opponent, setOpponent] = useState({})
-  const [currentUser, setCurrentUser] = useState("")
+  const [opponent, setOpponent] = useState({});
+  const [currentUser, setCurrentUser] = useState("");
 
   const router = useRouter();
 
@@ -21,17 +21,13 @@ export default function Matched(props) {
 
   useEffect(() => {
     const opponent_data = JSON.parse(props.opponent);
-    setOpponent(opponent_data)
+    setOpponent(opponent_data);
     const current_user = props.currentUser;
     setCurrentUser(current_user);
-
-
 
     // setInterval(() => {
     //   setTimeLeft(timeLeft -1 )
     // }, 1000)
-
-
 
     // const startCounter = () => {
     //   setTimeLeft((timeLeft) => timeLeft - 1);
@@ -48,7 +44,7 @@ export default function Matched(props) {
     // }
 
     // setInterval(startCounter, 1000);
-    
+
     // if (timeLeft < 1) {
     //   clearInterval(countDown);
     //   router.push({
@@ -63,23 +59,24 @@ export default function Matched(props) {
     //   clearInterval(startCounter);
     // }
   }, []);
-  
+  console.log("The current user", currentUser);
+
   const RedirectToEditor = () => {
     router.push({
       pathname: "/challenges/editor",
       query: {
         opponentName: opponent.name,
-        currentUser: currentUser
+        currentUser: currentUser,
       },
     });
-  }
+  };
 
   return (
     <Container>
       <Subheading>Warrior found</Subheading>
       <Battle>
         <Info>
-          <Profile>CC</Profile>
+          <Profile>{currentUser ? currentUser.substring(0, 2) : "CC"}</Profile>
           <Name>{JSON.parse(localStorage.getItem("nickname")).name}</Name>
         </Info>
 
@@ -88,7 +85,9 @@ export default function Matched(props) {
         </ImageContainer>
 
         <Info>
-          <Profile>SP</Profile>
+          <Profile>
+            {opponent?.name ? opponent?.name?.substring(0, 2) : "PP"}
+          </Profile>
           <Name>{opponent && opponent.name}</Name>
         </Info>
       </Battle>
