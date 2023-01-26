@@ -50,7 +50,7 @@ export default function Home() {
         <Image src={"/asset/logo.svg"} height={64} width={256} />
       </LogoContainer>
       <Subheading>
-        two coding warriors face off real-time on an exciting programming
+        Two coding warriors face off real-time on an exciting programming
         challenge.
       </Subheading>
       <Form className="NicknameInput">
