@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import{ useRouter } from "next/router";
+import { useRouter } from "next/router";
 
 export default function LookingForAMatch() {
   const [nickname, setNickname] = useState();
@@ -14,10 +14,8 @@ export default function LookingForAMatch() {
           .toUpperCase()
       );
     } else {
-      console.log("REDIRECT");
-      router.push("/")
+      router.push("/");
     }
-    
   }, []);
 
   return (

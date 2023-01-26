@@ -8,7 +8,6 @@ import { server } from "../config/config";
 export default function Home() {
   const [user, setUser] = useState("");
   const router = useRouter();
-  //this is a main brach clone.
   useEffect(() => {
     localStorage.clear();
   }, []);

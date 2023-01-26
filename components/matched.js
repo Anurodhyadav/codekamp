@@ -17,6 +17,10 @@ export default function Matched(props) {
 
   useEffect(() => {
     const opponent_data = JSON.parse(props.opponent);
+
+    if (!opponent_data) {
+      router.push("/");
+    }
     setOpponent(opponent_data);
     const current_user = props.currentUser;
     setCurrentUser(current_user);
@@ -78,7 +82,7 @@ export default function Matched(props) {
               ? opponent?.name?.substring(0, 2).toUpperCase()
               : "PP"}
           </Profile>
-          <Name>{opponent && opponent.name}</Name>
+          <Name>{opponent?.name}</Name>
         </Info>
       </Battle>
       <ReadyButton

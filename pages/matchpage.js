@@ -23,7 +23,7 @@ export default function MatchPage() {
 
     socket.on("set-match", (matchedDetails) => {
       const currentUserInfo = JSON.parse(localStorage.getItem("nickname"));
-      if (matchedDetails.user === currentUserInfo.name) {
+      if (matchedDetails?.user === currentUserInfo?.name) {
         setMatched(true);
         if (!opponent) {
           setopponentName(matchedDetails.login_user);

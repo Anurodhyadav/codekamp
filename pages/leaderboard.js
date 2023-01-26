@@ -5,8 +5,8 @@ const LeaderBoard = () => {
   const points = {
     1: {
       rank: 1,
-      nickname: "sankalpa",
-      points: 200,
+      nickname: "Anurodh",
+      points: 500,
     },
     2: {
       rank: 2,
