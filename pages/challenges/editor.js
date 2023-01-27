@@ -66,7 +66,7 @@ const Editor = () => {
   const runCode = () => {
     setIsLoading(true);
     testPassed = [];
-    fetch("https://api.programiz.pro/api/Challenge/run", {
+    fetch("https://api.programiz.pro/api/Marketing/Challenge/run", {
       method: "POST",
       body: JSON.stringify({
         challengeId: 613,
@@ -427,7 +427,7 @@ const OutputScreen = styled.div`
 
 const Output = styled.div`
   padding: 15px;
-  color: ${(props) => (props.isError ? "red" : "white")};
+  color: ${(props) => (props.isError ? "#F56969" : "white")};
 `;
 
 const OutputHeader = styled.div`
@@ -498,7 +498,7 @@ const TestCase = styled.div`
 `;
 
 const Error = styled.div`
-  color: red;
+  color: #f56969;
   padding: 3%;
 `;
 

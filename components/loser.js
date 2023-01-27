@@ -40,7 +40,7 @@ const Loser = ({ opponentCode, title }) => {
               onClick={() => setViewOpponentCode(true)}
               style={{ margin: "0 10px" }}
             >
-              View Opponent Code
+              View Opponent's Code
             </button>
           )}
         </ButtonContainer>

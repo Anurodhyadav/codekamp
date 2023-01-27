@@ -16,7 +16,7 @@ const Winner = () => {
               width={200}
             />
           </WinnerImageContainer>
-          <Points>+200 Points</Points>
+
           <h1>CONGRATULATIONS</h1>
           <p>
             You emerged victorious. You may now battle more warriors and conquer
