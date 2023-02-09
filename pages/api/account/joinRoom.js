@@ -1,4 +1,4 @@
-import { getAvailbleRoomFromRedis, putInRedis } from "../../../utils/redis";
+import { getAvailbleRoomFromRedis, putInRedis } from "../../utils/redis";
 
 export default async function joinRoom(req, res) {
   if (req.method == "POST") {

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import { useRouter } from "next/router";
 import { server } from "../config/config";
 
