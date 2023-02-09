@@ -23,7 +23,10 @@ export default function MatchPage() {
 
     socket.on("set-match", (matchedDetails) => {
       const currentUserInfo = JSON.parse(localStorage.getItem("nickname"));
-      if (matchedDetails?.user === currentUserInfo?.name) {
+      if (
+        matchedDetails?.user === currentUserInfo?.name &&
+        matchedDetails.login_user
+      ) {
         setMatched(true);
         if (!opponent) {
           setopponentName(matchedDetails.login_user);
@@ -38,6 +41,7 @@ export default function MatchPage() {
 
     socket.on("broadcast-user", (user) => {
       if (user !== localStorage.getItem("nickname")) {
+        console.log("THe user", user);
         setMatched(true);
         setopponentName(user);
         clearInterval(timer);
@@ -52,32 +56,36 @@ export default function MatchPage() {
       }
     });
     var timer = setInterval(() => {
-      socket.emit("user-online", localStorage.getItem("nickname"));
+      if (!matched) {
+        socket.emit("user-online", localStorage.getItem("nickname"));
+      } else {
+        localStorage.clear();
+      }
     }, 1000);
   };
 
   useEffect(() => {
     const localUser = JSON.parse(localStorage.getItem("nickname"))?.name;
-    if (!localUser) {
-      router.push("/");
-    }
+    // if (!localUser) {
+    //   router.push("/");
+    // }
     setCurrentUser(localUser);
     socketInitializer();
 
     // return () => clearInterval(timer)
   }, [matched]);
 
-  useEffect(() => {
-    const exitingFunction = () => {
-      localStorage.clear();
-    };
+  // useEffect(() => {
+  //   const exitingFunction = () => {
+  //     localStorage.clear();
+  //   };
 
-    router.events.on("routeChangeStart", exitingFunction);
+  //   router.events.on("routeChangeStart", exitingFunction);
 
-    return () => {
-      router.events.off("routeChangeStart", exitingFunction);
-    };
-  }, []);
+  //   return () => {
+  //     router.events.off("routeChangeStart", exitingFunction);
+  //   };
+  // }, []);
   return (
     <>
       {!matched ? (

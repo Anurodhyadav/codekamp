@@ -3,6 +3,9 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
+let opponentName;
+let isOpponentReady;
+
 export default function Matched(props) {
   let i;
 
@@ -18,18 +21,21 @@ export default function Matched(props) {
   useEffect(() => {
     const opponent_data = JSON.parse(props.opponent);
 
-    if (!opponent_data) {
-      router.push("/");
+    if (opponent_data) {
+      setOpponent(opponent_data);
+      const current_user = props.currentUser;
+      setCurrentUser(current_user);
+    } else {
+      // router.push("/");
     }
-    setOpponent(opponent_data);
-    const current_user = props.currentUser;
-    setCurrentUser(current_user);
   }, []);
 
   useEffect(() => {
-    const { name, ready_state } = readyStateInfoForUser;
+    // const { name, ready_state } = readyStateInfoForUser;
+    opponentName = readyStateInfoForUser.name;
+    isOpponentReady = readyStateInfoForUser.ready_state;
 
-    if (name === opponent?.name && ready_state && loadingState) {
+    if (opponentName === opponent?.name && isOpponentReady && loadingState) {
       router.push({
         pathname: "/challenges/editor",
         query: {
@@ -47,6 +53,16 @@ export default function Matched(props) {
       ready_state: true,
     };
     setLoadingState(true);
+
+    if (opponentName === opponent?.name && isOpponentReady) {
+      router.push({
+        pathname: "/challenges/editor",
+        query: {
+          opponentName: opponent?.name,
+          currentUser: currentUser,
+        },
+      });
+    }
 
     socket.emit("ready-state", readyStateForUser);
     const { name, ready_state } = readyStateInfoForUser;
@@ -69,7 +85,7 @@ export default function Matched(props) {
           <Profile>
             {currentUser ? currentUser.substring(0, 2).toUpperCase() : "CC"}
           </Profile>
-          <Name>{JSON.parse(localStorage.getItem("nickname"))?.name}</Name>
+          <Name>{currentUser}</Name>
         </Info>
 
         <ImageContainer>

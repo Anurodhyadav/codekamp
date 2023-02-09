@@ -22,21 +22,26 @@ export default function Home() {
   });
 
   const handleSubmit = async () => {
+    if (!user) return;
     localStorage.setItem("nickname", JSON.stringify(user));
-    const response = await axiosInstance("/account/login", {
-      method: "POST",
-      data: {
-        name: user.name,
-        password: Math.random()
-          .toString(36)
-          .replace(/[^a-z]+/g, "")
-          .substr(0, 5),
-      },
-    });
-    if (response.status === 200) {
-      localStorage.setItem("token", response.data.accessToken);
-      router.push("/matchpage");
-    }
+
+    // const response = await axiosInstance.post("/account/joinRoom", { user });
+
+    // const data = response.data;
+
+    // const { roomId, joining } = data;
+
+    // router.push({
+    //   pathname: "/matchpage",
+    //   query: {
+    //     roomId: roomId,
+    //     joining: joining,
+    //   },
+    // });
+
+    // if (response.status === 200) {
+    router.push("/matchpage");
+    // }
   };
 
   const handleNameChange = (e) => {
