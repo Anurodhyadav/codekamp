@@ -8,16 +8,19 @@ import Loser from "../../components/loser";
 import Winner from "../../components/Winner";
 import Image from "next/image";
 import Loader from "../../components/loader";
+import Editor from "@monaco-editor/react";
+import { codeRunner } from "../../utils/codeRunner";
 
 let socket;
 
-const Editor = () => {
+const EditorComponent = () => {
   const [code, setCode] = useState();
   const [partnerCode, setpartnerCode] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [i, setI] = useState(2);
   const [apiResponse, setAPIResponse] = useState();
   const [count, setCount] = useState([1, 2]);
+  const [codeResult, setCodeResult] = useState(null);
   const [testCase, setTestcase] = useState(0);
   const router = useRouter();
   const [partnerWon, setpartnerWon] = useState(false);
@@ -64,41 +67,53 @@ const Editor = () => {
   );
 
   const runCode = () => {
-    setIsLoading(true);
-    testPassed = [];
-    fetch("https://api.programiz.pro/api/Marketing/Challenge/run", {
-      method: "POST",
-      body: JSON.stringify({
-        challengeId: 613,
-        code: code,
-      }),
-      headers: {
-        "Content-type": "application/json;",
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjY2MjUzIiwibmJmIjoxNjYwODgxOTA4LCJleHAiOjE2NjM0NzM5MDgsImlhdCI6MTY2MDg4MTkwOH0.j4un52YXeiL2uSkWgpWR0-RLF9STpa-IhvQ6r3z_IDc",
-      },
-    })
-      .then((response) => response.json())
-      .then((json) => {
-        const data = json.data;
-        setAPIResponse(data);
-        setIsLoading(false);
-        const code_submition = {
-          coder: currentUser,
-          code_submitted: true,
-        };
+    const result = codeRunner(code);
+    setCodeResult(result);
+    console.log("The result", result);
 
-        data &&
-          data.allAvailableTestsPassed &&
-          socket.emit("code-submit", code_submition);
-      });
+    // let data = {
+    //   code: code,
+    //   language: "js",
+    //   input: 5,
+    // };
+    // setIsLoading(true);
+    // testPassed = [];
+    // fetch("https://codexweb.netlify.app/.netlify/functions/enforceCode", {
+    //   method: "POST",
+    //   mode: "no-cors",
+    //   // body: JSON.stringify({
+    //   //   challengeId: 613,
+    //   //   code: code,
+    //   // }),
+    //   data: data,
+    //   headers: {
+    //     "Content-type": "application/json;",
+    //     Authorization:
+    //       "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjY2MjUzIiwibmJmIjoxNjYwODgxOTA4LCJleHAiOjE2NjM0NzM5MDgsImlhdCI6MTY2MDg4MTkwOH0.j4un52YXeiL2uSkWgpWR0-RLF9STpa-IhvQ6r3z_IDc",
+    //   },
+    // })
+    //   .then((response) => console.log('the response', response))
+    //   // .then((json) => {
+    //   //   const data = json.data;
+    //   //   console.log("The data", data);
+    //   //   setAPIResponse(data);
+    //   //   setIsLoading(false);
+    //   //   const code_submition = {
+    //   //     coder: currentUser,
+    //   //     code_submitted: true,
+    //   //   };
+
+    //   //   data &&
+    //   //     data.allAvailableTestsPassed &&
+    //   //     socket.emit("code-submit", code_submition);
+    //   // });
   };
 
-  const handleKeyUp = (e) => {
-    setCode(e.target.value);
+  const handleKeyUp = (value) => {
+    setCode(value);
     const emit_value = {
       user: currentUser,
-      code: e.target.value,
+      code: value,
     };
     socket.emit("input-change", emit_value);
   };
@@ -158,28 +173,27 @@ const Editor = () => {
           <IDE>
             <File>
               <FileName>
-                <p>main.py</p>
+                <p>main.js</p>
               </FileName>
             </File>
-            <FlexRow>
-              <Lines>
-                {count.map((element, index) => {
-                  return <Line key={index}>{element}</Line>;
-                })}
-              </Lines>
-
-              <InputScreen
-                onChange={handleKeyUp}
-                onKeyPress={(e) => handleEnter(e)}
-              ></InputScreen>
-            </FlexRow>
+            <Editor
+              height="50vh"
+              width={`100%`}
+              language={"javascript"}
+              value={code}
+              defaultValue="//Starter Code"
+              onChange={handleKeyUp}
+            />
           </IDE>
         </Input>
         <OutputScreen>
           <OutputHeader>Output</OutputHeader>
-          {apiResponse && !apiResponse.error ? (
+          {codeResult?.output.length ? (
             <>
-              <Tab>
+              {codeResult?.output.map((el, index) => (
+                <div key={index}>{el}</div>
+              ))}
+              {/* <Tab>
                 <TabElement
                   active={testCase === 0}
                   onClick={() => handleTabChange(0)}
@@ -240,8 +254,8 @@ const Editor = () => {
                   />
                   <TestTitle>Test Case 4</TestTitle>
                 </TabElement>
-              </Tab>
-              <Output>
+              </Tab> */}
+              {/* <Output>
                 {apiResponse.tests.map((test, id) => {
                   return (
                     testCase === id && (
@@ -259,10 +273,10 @@ const Editor = () => {
                     )
                   );
                 })}
-              </Output>
+              </Output> */}
             </>
           ) : (
-            <Error>{apiResponse && apiResponse.error}</Error>
+            <Error>{codeResult?.error}</Error>
           )}
         </OutputScreen>
       </UserEditor>
@@ -270,7 +284,7 @@ const Editor = () => {
   );
 };
 
-export default Editor;
+export default EditorComponent;
 
 const Title = styled.h1`
   font-weight: 700;
